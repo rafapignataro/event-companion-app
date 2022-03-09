@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { parseCookies } from 'nookies';
+import Router from 'next/router';
 
 import { globalConfig } from '../../config';
 
@@ -20,7 +21,7 @@ api.interceptors.request.use(config => {
 
 api.interceptors.response.use(response => response, error => {
 	if (error.response.status === 401) {
-		//place your reentry code
+		Router.push('/login');
 	}
 
 	return error;
