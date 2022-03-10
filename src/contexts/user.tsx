@@ -27,20 +27,20 @@ export default function UserProvider({ children }: UserProviderProps) {
 
 	useEffect(() => {
 		(async () => {
-			await isAuthenticated();
+			// await isAuthenticated();
 
-			const cookies = parseCookies();
-			const token = cookies['companion_token'];
+			// const cookies = parseCookies();
+			// const token = cookies['companion_token'];
       
-			const user = decode(token, { json: true });
+			// const user = decode(token, { json: true });
   
-			if(user) {
-				setUser({
-					id: user.id,
-					name: user.name,
-					email: user.email,
-				});
-			}
+			// if(user) {
+			// 	setUser({
+			// 		id: user.id,
+			// 		name: user.name,
+			// 		email: user.email,
+			// 	});
+			// }
 
 			setLoading(false);
 		})();
