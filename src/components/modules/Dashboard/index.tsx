@@ -1,8 +1,8 @@
 import { Page } from '../../common/Page';
 
-export const Home = () => {
+export const Dashboard = () => {
 	return (
-		<Page title="Dashboard" >
+		<Page title="Dashboard">
 			<h1>Dashboard</h1>
 		</Page>
 	);

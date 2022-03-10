@@ -12,7 +12,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-	const { token } = parseCookies();
+	const cookies = parseCookies();
+
+	const token = cookies['companion_token'];
   
 	if(config.headers) config.headers.Authorization = `Bearer ${token}`;
    
@@ -20,11 +22,18 @@ api.interceptors.request.use(config => {
 });
 
 api.interceptors.response.use(response => response, error => {
-	if (error.response.status === 401) {
-		Router.push('/login');
-	}
+	if (error.response.status === 401) Router.push('/login');
 
-	return error;
+	return Promise.reject(error.response.data);
 });
 
-export { api };
+const unauthApi = axios.create({
+	baseURL: globalConfig.apiURL,
+	headers: {
+		'Content-Type': 'application/json',
+	},
+});
+
+unauthApi.interceptors.response.use(response => response, error =>  Promise.reject(error.response.data));
+
+export { api, unauthApi };

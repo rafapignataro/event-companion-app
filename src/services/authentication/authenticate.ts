@@ -1,4 +1,4 @@
-import { api } from '../../utils/api';
+import { unauthApi } from '../../utils/api';
 
 type AuthenticateRequest = {
   email: string;
@@ -15,7 +15,7 @@ type AuthenticateResponse = {
 }
 
 export const authenticate = async ({ email, password }: AuthenticateRequest) => {
-	const { data } = await api.post<AuthenticateResponse>('/auth/authenticate', {
+	const { data } = await unauthApi.post<AuthenticateResponse>('/auth/authenticate', {
 		email,
 		password
 	});

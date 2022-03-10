@@ -1,4 +1,6 @@
-import { Head } from 'next/document';
+import Head from 'next/head';
+import { useUser } from '../../../contexts/user';
+import { LoadingScreen } from '../LoadingScreen';
 
 type PageProps = {
   title: string;
@@ -6,6 +8,10 @@ type PageProps = {
 }
 
 export const Page = ({ title, children }: PageProps) => {
+	const { loading } = useUser();
+
+	if(loading) return <LoadingScreen />;
+
 	return (
 		<div style={{ height: '100%', width: '100%' }}>
 			<Head>

@@ -4,25 +4,27 @@ import Image from 'next/image';
 import { setCookie } from 'nookies';
 
 import { authenticate } from '../../../services/authentication/authenticate';
+import { useUser } from '../../../contexts/user';
 
 export const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [loading, setLoading] = useState(false);
+
+	const { saveUser } = useUser(); 
 
 	const handleLoginSubmit = async (event: FormEvent) => {
 		try {
 			event.preventDefault();
+			setLoading(true);
 
 			const { token, user } = await authenticate({ email, password });
-
-			setCookie(undefined, 'companion_token', token, {
-				maxAge: 60 * 60,
-			});
-
-			localStorage.setItem('companion_user', JSON.stringify(user));
-			alert('logado');
+			console.log('uhasuahsuha');
+			saveUser(token, user);
 		} catch (err) {
-			console.error(err);
+			alert(err.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -43,7 +45,7 @@ export const Login = () => {
 						<label>Password</label>
 						<input id="password" type="password" value={password} onChange={event => setPassword(event.target.value)} />
 					</div>
-					<button>ENTRAR</button>
+					<button disabled={loading}>{loading ? 'Carregando...' : 'ENTRAR'}</button>
 				</form>
 			</div>
 		</div>
