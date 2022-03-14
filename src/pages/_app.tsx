@@ -1,3 +1,5 @@
+import 'antd/dist/antd.css';
+
 import type { AppProps } from 'next/app';
 import UserProvider from '../contexts/user';
 

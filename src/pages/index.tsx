@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 
-import { Dashboard } from '../components/modules/Dashboard';
+import { Locations } from '../components/modules/Locations';
 
-const Home: NextPage = () => <Dashboard />;
+const Home: NextPage = () => <Locations />;
 
 export default Home;
