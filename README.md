@@ -17,7 +17,7 @@ git clone https://github.com/rafapignataro/event-companion-admin.git
 ```
 
 ### 2: Install the dependencies
-Enter the folder cloned
+Enter the cloned folder
 
 ```sh
 cd event-companion-admin
