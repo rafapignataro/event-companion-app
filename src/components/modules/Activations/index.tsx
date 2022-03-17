@@ -2,14 +2,14 @@ import { Col, Row } from 'antd';
 import dynamic from 'next/dynamic';
 import { Page } from '../../common/Page';
 import { SideMenu } from '../../common/SideMenu';
-import { LocationMenu } from './LocationMenu';
+import { ActivationMenu } from './ActivationMenu';
 
-export const Locations = () => {
+export const Activations = () => {
 	const MapWithNoSSR = dynamic(() => import('../../common/LeafletContainer'), {
 		ssr: false
 	});
 	return (
-		<Page title="Locations">
+		<Page title="Activations">
 			<Row>
 				<Col span={24} xl={12}>
 					<MapWithNoSSR 
@@ -20,12 +20,12 @@ export const Locations = () => {
 						mapCornerEnd={
 							{ lat: -23.695954697016138, lng: -46.69165849685668, alt: undefined }
 						}
-						mapTitle="LOCAIS"
+						mapTitle="ATIVAÇÕES"
 					></MapWithNoSSR>
 				</Col>
 				<Col span={24} xl={12}>
 					<SideMenu title='AÇÕES'>
-						<LocationMenu locationSelected={undefined}/>
+						<ActivationMenu locationSelected={undefined}/>
 					</SideMenu>
 				</Col>
 			</Row>

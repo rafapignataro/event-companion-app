@@ -25,16 +25,16 @@ const routes = [
 		path: '/activations',
 		icon: <SoundFilled style={{fontSize: '1em', marginRight: '0.8em'}} />
 	},
-	{ 
-		name: 'Atrações', 
-		path: '/attractions',
-		icon: <BsVinylFill style={{fontSize: '1em', marginRight: '0.8em'}} />
-	},
-	{ 
-		name: 'Line-ups', 
-		path: '/line-ups',
-		icon: <ScheduleFilled style={{fontSize: '1em', marginRight: '0.8em'}} />
-	},
+	// { 
+	// 	name: 'Atrações', 
+	// 	path: '/attractions',
+	// 	icon: <BsVinylFill style={{fontSize: '1em', marginRight: '0.8em'}} />
+	// },
+	// { 
+	// 	name: 'Line-ups', 
+	// 	path: '/line-ups',
+	// 	icon: <ScheduleFilled style={{fontSize: '1em', marginRight: '0.8em'}} />
+	// },
 ];
 
 export const Navigation = ({ selectedPage }: NavigationProps) => {
@@ -58,7 +58,7 @@ export const Navigation = ({ selectedPage }: NavigationProps) => {
 
 	return (
 		<>
-			{screens.sm ? (
+			{screens.lg ? (
 				<Layout.Sider 
 					collapsible
 					collapsed={collapsed}

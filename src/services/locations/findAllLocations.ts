@@ -1,15 +1,8 @@
 import { api } from '../../utils/api';
+import { Visitor } from './types';
 
 type FindAllLocationsRequest = {
   eventId: number
-}
-
-type Visitor = {
-  id: number;
-  customerId: number;
-  eventId: number;
-  updatedAt: Date;
-  createdAt: Date;
 }
 
 export const findAllLocations = async ({ eventId }: FindAllLocationsRequest) => {

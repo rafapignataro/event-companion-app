@@ -27,7 +27,7 @@ export const Page = ({ title, children }: PageProps) => {
 			</Head>
 			<Layout style={{ minHeight: '100vh' }}>
 				<Navigation selectedPage={currentPage} />
-				<Content style={{position: 'relative'}}>
+				<Content style={{position: 'relative', padding: '1em'}}>
 					{children}
 				</Content>
 			</Layout>
