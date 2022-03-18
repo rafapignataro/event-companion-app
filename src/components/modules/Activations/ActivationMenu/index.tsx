@@ -3,13 +3,9 @@ import { CheckOutlined, CloseOutlined, DeleteFilled } from '@ant-design/icons';
 import { Button, DatePicker, Form, Input, notification, Select, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { Activation } from '../../../../services/activations/types';
-import { Location } from '../../../../services/locations/types';
 import { sleep } from '../../../../utils/helpers/sleep';
 import { useForm } from 'antd/lib/form/Form';
-
-type ActivationMenuProps = {
-  locationSelected?: Location;
-}
+import { useLocation } from '../../../../contexts/location';
 
 type FormFields = {
 	description: string;
@@ -17,17 +13,6 @@ type FormFields = {
 }
 
 type ActivationFormMode = 'create' | 'edit';
-
-const test = {
-	id: 1,
-	eventId: 1,
-	brandId: 1,
-	name: 'Local de teste',
-	description: '',
-	latitude: 0,
-	longitude: 0,
-	locationCategoryId: 1,
-};
 
 const testActivations = [
 	{
@@ -51,7 +36,7 @@ const disabledDate = (current: any) => {
 	return current && current < moment().startOf('day');
 };
 
-export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
+export const ActivationMenu = () => {
 	const [activationFormOpen, setActivationFormOpen] = useState(false);
 	const [activationFormMode, setActivationFormMode] = useState<ActivationFormMode>('create');
 	const [locationActivations, setLocationActivations] = useState<Activation[]>(testActivations);
@@ -59,8 +44,14 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 	const [createForm] = useForm();
 	const [updateForm] = useForm();
 
+	const { location: locationSelected, selectLocation } = useLocation();
+
 	useEffect(() => {
-		if (!locationSelected) return;
+		if (!locationSelected) {
+			selectLocation(null);
+			setActivationFormOpen(false);
+			return;
+		}
 		(async () => {
 			await sleep();
 			setLocationActivations(testActivations);
@@ -231,7 +222,10 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 							</Form.Item>
 
 							<Form.Item>
-								<Button size='large' type="default" icon={<CloseOutlined />} onClick={() => setActivationFormOpen(false)}>
+								<Button size='large' type="default" icon={<CloseOutlined />} onClick={() => {
+									selectLocation(null);
+									setActivationFormOpen(false);
+								}}>
 									Cancelar
 								</Button>
 							</Form.Item>
@@ -242,6 +236,7 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 								onChange={(e) => setSelectedActivation(e)}
 								placeholder=" - "
 								size='large'
+								value={selectedActivation}
 							>
 								{locationActivations.map((activation) => {
 									return (
@@ -254,7 +249,7 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 									);
 								})}
 							</Select>
-							{selectedActivation && (
+							{selectedActivation ? (
 								<Form
 									name="updateForm"
 									onFinish={onFinishUpdate}
@@ -305,13 +300,20 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 
 									<Form.Item>
 										<Button size='large' type="default" icon={<CloseOutlined />} onClick={() => {
-											setActivationFormOpen(false);
 											setSelectedActivation(null);
 										}}>
 											Cancelar
 										</Button>
 									</Form.Item>
 								</Form>
+							) : (
+								<Button size='large' type="default" icon={<CloseOutlined />} onClick={() => {
+									setSelectedActivation(null);
+									selectLocation(null);
+									setActivationFormOpen(false);
+								}}>
+									Cancelar
+								</Button>
 							)}
 						</>
 					)}
@@ -319,6 +321,7 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 			) : (
 				<>
 					<Button 
+						style={{ marginBottom: '1em' }}
 						disabled={!locationSelected}
 						size='large'
 						onClick={() => {
@@ -327,6 +330,7 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 						}}
 					>Criar uma nova ativação</Button>
 					<Button 
+						style={{ marginBottom: '1em' }}
 						disabled={!locationSelected}
 						size='large'
 						onClick={() => {
@@ -334,7 +338,12 @@ export const ActivationMenu = ({ locationSelected }: ActivationMenuProps) => {
 							setActivationFormOpen(true);
 						}}
 					>Editar ativações</Button>
-					<Typography.Title level={4}>SELECIONE UM LOCAL</Typography.Title>
+					<Typography.Title 
+						level={4} 
+						style={{ textAlign: 'center', margin: '1em 0' }}
+					>
+						SELECIONE UM LOCAL
+					</Typography.Title>
 				</>
 			)}
 		</>

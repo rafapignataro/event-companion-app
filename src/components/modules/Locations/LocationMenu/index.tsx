@@ -1,13 +1,9 @@
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Button, Form, Input, notification, Select, Typography } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from '../../../../contexts/location';
 import { locationCategories } from '../../../../data/locationCategories';
-import { Location } from '../../../../services/locations/types';
 import { sleep } from '../../../../utils/helpers/sleep';
-
-type LocationMenuProps = {
-  locationSelected?: Location;
-}
 
 type FormFields = {
 	name: string,
@@ -15,19 +11,16 @@ type FormFields = {
 	locationCategoryId: number
 }
 
-const test = {
-	id: 1,
-	eventId: 1,
-	brandId: 1,
-	name: 'ZAP?',
-	description: '',
-	latitude: 0,
-	longitude: 0,
-	locationCategoryId: 0,
-};
-
-export const LocationMenu = ({ locationSelected }: LocationMenuProps) => {
+export const LocationMenu = () => {
 	const [locationFormOpen, setLocationFormOpen] = useState(false);
+
+	const { location: locationSelected, selectLocation } = useLocation();
+
+	useEffect(() => {
+		if (!locationSelected) {
+			setLocationFormOpen(false);
+		}
+	}, [locationSelected]);
 
 	const openNotification = (type: string, message: string, err?: string) => {
 		if(type == 'success' || type == 'error')
@@ -112,7 +105,10 @@ export const LocationMenu = ({ locationSelected }: LocationMenuProps) => {
 						</Form.Item>
 
 						<Form.Item>
-							<Button size='large' type="default" icon={<CloseOutlined />} onClick={() => setLocationFormOpen(false)}>
+							<Button size='large' type="default" icon={<CloseOutlined />} onClick={() => {
+								selectLocation(null);
+								setLocationFormOpen(false);
+							}}>
 								Cancelar
 							</Button>
 						</Form.Item>
@@ -126,7 +122,14 @@ export const LocationMenu = ({ locationSelected }: LocationMenuProps) => {
 						size='large'
 					>Editar um local</Button>
 
-					{!locationSelected && (<Typography.Title style={{textAlign: 'center'}} level={4}>SELECIONE UM LOCAL</Typography.Title>)}
+					{!locationSelected && (
+						<Typography.Title 
+							level={4} 
+							style={{ textAlign: 'center', margin: '1em 0' }}
+						>
+							SELECIONE UM LOCAL
+						</Typography.Title>
+					)}
 				</>
 			)}
 		</>

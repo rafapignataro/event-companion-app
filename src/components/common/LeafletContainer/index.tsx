@@ -1,35 +1,58 @@
-import { Card, Layout } from 'antd';
+import { Card, Spin } from 'antd';
 import Head from 'next/head';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvent } from 'react-leaflet';
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
-import { LoadingScreen } from '../LoadingScreen';
 import Title from 'antd/lib/typography/Title';
+import { useLocation } from '../../../contexts/location';
+import { Location } from '../../../services/locations/types';
+
+const test = {
+	id: 1,
+	eventId: 1,
+	brandId: 1,
+	name: 'Local de teste',
+	description: '',
+	latitude: 0,
+	longitude: 0,
+	locationCategoryId: 1,
+};
 
 type AnimatedPanning = {
-	animateRef: MutableRefObject<boolean>
+	animateRef: MutableRefObject<boolean>;
+	setLocation: () => void;
 }
 type UserLocationProperties = {
-	showUserLocation?: boolean
+	showUserLocation?: boolean;
+}
+type LocationMarkerProperties = {
+	latLong: [number, number];
+	location: Location;
+	setLocation: () => void;
 }
 type MapProperties = {
-	showUserLocation?: boolean
-	mapCornerStart: {lat: number, lng: number, alt?: number | undefined}
-	mapCornerEnd: {lat: number, lng: number, alt?: number | undefined}
-	mapTitle?: string 
+	showUserLocation?: boolean;
+	mapCornerStart: {lat: number, lng: number, alt?: number | undefined};
+	mapCornerEnd: {lat: number, lng: number, alt?: number | undefined};
+	mapTitle?: string;
 }
 
-function SetViewOnClick({ animateRef }: AnimatedPanning) {
-	const map = useMapEvent('click', (e) => {
-		map.setView(e.latlng, map.getZoom(), {
-			animate: animateRef.current || false,
-		});
+const SetViewOnClick = ({ animateRef, setLocation }: AnimatedPanning) => {
+	const map = useMapEvents({
+		click: (e) => {
+			map.setView(e.latlng, map.getZoom(), {
+				animate: animateRef.current || false,
+			});
+			setLocation();
+		},
+		drag: () => {
+			setLocation();
+		}
 	});
-
 	return null;
-}
+};
 
-function UserLocation({ showUserLocation }: UserLocationProperties) {
+const UserLocation = ({ showUserLocation }: UserLocationProperties) => {
 	const [position, setPosition] = useState<LatLng | null>(null);
 	const mapInstance = useMap();
 	useEffect(() => {
@@ -42,12 +65,29 @@ function UserLocation({ showUserLocation }: UserLocationProperties) {
 	return position === null ? null : (
 		<Marker position={position}/>
 	);
-}
+};
+
+const LocationMarker = ({ latLong, location, setLocation }: LocationMarkerProperties) => {
+	const mapInstance = useMap();
+	return (
+		<Marker 
+			position={latLong}
+			eventHandlers={{
+				click: () => { 
+					console.log(location);
+					mapInstance.flyTo(latLong, mapInstance.getMaxZoom());
+					setLocation(); 
+				},
+			}}
+		/>
+	);
+};
 
 const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapTitle }: MapProperties) => {
 	const [hasMounted, setHasMounted] = useState(false);
 	const mapBounds = latLngBounds(convertCoordinates(mapCornerStart), mapCornerEnd);
 	const animateRef = useRef(true);
+	const { selectLocation } = useLocation();
 
 	useEffect(() => {
 		setHasMounted(true);
@@ -78,12 +118,17 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 								/>
-								<SetViewOnClick animateRef={animateRef} />
+								<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
 								<UserLocation showUserLocation={showUserLocation} />
+								<LocationMarker
+									latLong={[-23.701, -46.697]}
+									location={test}
+									setLocation={() => selectLocation(test)}
+								/>
 							</MapContainer>
 						</div>
 					) : (
-						<LoadingScreen/>
+						<Spin tip="Carregando..."/>
 					)}
 				</div>
 			</Card>

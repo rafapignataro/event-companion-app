@@ -1,3 +1,4 @@
+import { Spin } from 'antd';
 import Image from 'next/image';
 
 export const LoadingScreen = () => {
@@ -11,7 +12,7 @@ export const LoadingScreen = () => {
 			alignItems: 'center'
 		}}>
 			<Image src="/svg/logo.svg" width="150" height="150" />
-			<h1>Carregando ...</h1>
+			<Spin tip="Carregando..."/>
 		</div>
 	);
 };
