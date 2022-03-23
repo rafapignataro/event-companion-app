@@ -5,6 +5,7 @@ import { Header } from 'antd/lib/layout/layout';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { BsVinylFill } from 'react-icons/bs';
+import { useUser } from '../../../../contexts/user';
 import styles from './styles.module.css';
 
 const { Text } = Typography;
@@ -40,6 +41,7 @@ const routes = [
 export const Navigation = ({ selectedPage }: NavigationProps) => {
 	const screens = useBreakpoint();
 	const router = useRouter();
+	const { logoutUser } = useUser();
 
 	const [collapsed, setCollapsed] = useState(false);
 	const [drawerVisible, setDrawerVisible] = useState(false);
@@ -85,6 +87,14 @@ export const Navigation = ({ selectedPage }: NavigationProps) => {
 								</Menu.Item>
 							);
 						})}
+						<Menu.Item 
+							key={'biruliru'} 
+							style={{fontSize: '1.2em'}} 
+							icon={<SoundFilled style={{fontSize: '1em', marginRight: '0.8em'}} />}
+							onClick={() => logoutUser()}
+						>
+								Logout
+						</Menu.Item>
 					</Menu>
 				</Layout.Sider>
 			) : (
@@ -115,6 +125,14 @@ export const Navigation = ({ selectedPage }: NavigationProps) => {
 									</Menu.Item>
 								);
 							})}
+							<Menu.Item 
+								key={'biruliru'} 
+								style={{fontSize: '1.2em'}} 
+								icon={<SoundFilled style={{fontSize: '1em', marginRight: '0.8em'}} />}
+								onClick={() => logoutUser()}
+							>
+								Logout
+							</Menu.Item>
 						</Menu>
 					</Drawer>
 				</Header>

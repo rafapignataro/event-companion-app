@@ -10,7 +10,7 @@ type ConfigOptions = {
 const config: ConfigOptions = {
 	development: {
 		env: 'development',
-		apiURL: 'http://localhost:3001'
+		apiURL: 'https://event-companion-api.herokuapp.com'
 	},
 	staging: {
 		env: 'staging',
@@ -18,6 +18,6 @@ const config: ConfigOptions = {
 	}
 };
 
-const globalConfig = config[process.env.NODE_ENV];
+const globalConfig = config[process.env.NEXT_PUBLIC_NODE_ENV || 'development'];
 
 export { globalConfig };

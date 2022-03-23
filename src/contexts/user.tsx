@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { parseCookies, setCookie } from 'nookies';
+import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import { decode } from 'jsonwebtoken';
 import { isAuthenticated } from '../services/authentication/isAuthenticated';
+import { LoadingScreen } from '../components/common/LoadingScreen';
+import Router from 'next/router';
 
 type UserProviderProps = {
   children: React.ReactNode;
@@ -16,7 +18,8 @@ type User = {
 type UserContextProps = {
   user: User;
   loading: boolean;
-  saveUser: (token: string, user: User) => void
+  saveUser: (token: string, user: User) => void;
+	logoutUser: () => void;
 }
 
 const UserContext = createContext({} as UserContextProps);
@@ -27,22 +30,26 @@ export default function UserProvider({ children }: UserProviderProps) {
 
 	useEffect(() => {
 		(async () => {
-			await isAuthenticated();
+			try {
+				await isAuthenticated();
 
-			const cookies = parseCookies();
-			const token = cookies['companion_token'];
-      
-			const user = decode(token, { json: true });
-  
-			if(user) {
-				setUser({
-					id: user.id,
-					name: user.name,
-					email: user.email,
-				});
+				const cookies = parseCookies();
+				const token = cookies['companion_token'];
+				
+				const user = decode(token, { json: true });
+		
+				if(user) {
+					setUser({
+						id: user.id,
+						name: user.name,
+						email: user.email,
+					});
+				}
+			} catch (err) {
+				console.log(err);
+			} finally {
+				setLoading(false);
 			}
-
-			setLoading(false);
 		})();
 	}, []);
 
@@ -52,10 +59,22 @@ export default function UserProvider({ children }: UserProviderProps) {
 		setCookie(undefined, 'companion_token', token, {
 			maxAge: 60 * 60,
 		});
+
+		Router.push('/');
 	};
 
+	const logoutUser = () => {
+		setUser({} as User);
+		
+		destroyCookie(undefined, 'companion_token');
+
+		Router.push('/login');
+	};
+
+	if(loading) return <LoadingScreen />;
+
 	return (
-		<UserContext.Provider value={{ user, loading, saveUser }}>
+		<UserContext.Provider value={{ user, loading, saveUser, logoutUser }}>
 			{children}
 		</UserContext.Provider>
 	);

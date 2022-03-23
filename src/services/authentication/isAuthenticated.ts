@@ -1,5 +1,3 @@
 import { api } from '../../utils/api';
 
-export const isAuthenticated = async () => {
-	await api.get('/auth/status');
-};
+export const isAuthenticated = async () => api.get('/auth/status');

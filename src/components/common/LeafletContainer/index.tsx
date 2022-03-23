@@ -2,10 +2,11 @@ import { Card, Spin } from 'antd';
 import Head from 'next/head';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
-import { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
+import L, { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
 import Title from 'antd/lib/typography/Title';
 import { useLocation } from '../../../contexts/location';
 import { Location } from '../../../services/locations/types';
+import { findAllLocations } from '../../../services/locations/findAllLocations';
 
 const test = {
 	id: 1,
@@ -89,8 +90,13 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 	const animateRef = useRef(true);
 	const { selectLocation } = useLocation();
 
+
+	const [locations, setLocations] = useState<Location[]>([]);
+
 	useEffect(() => {
 		setHasMounted(true);
+
+		findAllLocations({ eventId: 1}).then(locations => setLocations(locations));
 	}, []);
 	
 	return (
@@ -113,18 +119,26 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 								style={{height: '100%'}}
 								maxBoundsViscosity={1.0}
 								maxBounds={mapBounds}
+								layers={[
+									L.tileLayer('')
+								]}
 							>
 								<TileLayer
 									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+									
 								/>
 								<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
 								<UserLocation showUserLocation={showUserLocation} />
-								<LocationMarker
-									latLong={[-23.701, -46.697]}
-									location={test}
-									setLocation={() => selectLocation(test)}
-								/>
+								{locations.map(location => (
+									<LocationMarker
+										key={location.id}
+										latLong={[location.latitude, location.longitude]}
+										location={location}
+										setLocation={() => selectLocation(location)}
+									/>
+								))}
+								
 							</MapContainer>
 						</div>
 					) : (
@@ -137,4 +151,3 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 };
 
 export default LeafletContainer;
-

@@ -1,7 +1,6 @@
 import { FormEvent, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { setCookie } from 'nookies';
 
 import { authenticate } from '../../../services/authentication/authenticate';
 import { useUser } from '../../../contexts/user';
@@ -19,7 +18,7 @@ export const Login = () => {
 			setLoading(true);
 
 			const { token, user } = await authenticate({ email, password });
-			console.log('uhasuahsuha');
+
 			saveUser(token, user);
 		} catch (err) {
 			alert(err.message);
