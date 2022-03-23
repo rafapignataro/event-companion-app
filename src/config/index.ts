@@ -12,9 +12,9 @@ const config: ConfigOptions = {
 		env: 'development',
 		apiURL: 'http://localhost:3001'
 	},
-	production: {
-		env: 'production',
-		apiURL: 'http://localhost:3001'
+	staging: {
+		env: 'staging',
+		apiURL: 'https://event-companion-api.herokuapp.com'
 	}
 };
 
