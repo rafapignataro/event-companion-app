@@ -1,5 +1,5 @@
 
-import { MenuOutlined, ScheduleFilled, ShopFilled, SoundFilled } from '@ant-design/icons';
+import { LogoutOutlined, MenuOutlined, ScheduleFilled, ShopFilled, SoundFilled } from '@ant-design/icons';
 import { Layout, Menu, Typography, Grid, Drawer, Button } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { useRouter } from 'next/router';
@@ -89,8 +89,8 @@ export const Navigation = ({ selectedPage }: NavigationProps) => {
 						})}
 						<Menu.Item 
 							key={'biruliru'} 
-							style={{fontSize: '1.2em'}} 
-							icon={<SoundFilled style={{fontSize: '1em', marginRight: '0.8em'}} />}
+							style={{fontSize: '1.2em', marginTop: 'auto'}} 
+							icon={<LogoutOutlined style={{fontSize: '1em', marginRight: '0.8em'}} />}
 							onClick={() => logoutUser()}
 						>
 								Logout
@@ -128,7 +128,7 @@ export const Navigation = ({ selectedPage }: NavigationProps) => {
 							<Menu.Item 
 								key={'biruliru'} 
 								style={{fontSize: '1.2em'}} 
-								icon={<SoundFilled style={{fontSize: '1em', marginRight: '0.8em'}} />}
+								icon={<LogoutOutlined style={{fontSize: '1em', marginRight: '0.8em'}} />}
 								onClick={() => logoutUser()}
 							>
 								Logout

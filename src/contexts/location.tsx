@@ -3,30 +3,50 @@ import { parseCookies, setCookie } from 'nookies';
 import { decode } from 'jsonwebtoken';
 import { isAuthenticated } from '../services/authentication/isAuthenticated';
 import { Location } from '../services/locations/types';
+import { findAllLocations } from '../services/locations/findAllLocations';
 
 type LocationProviderProps = {
   children: React.ReactNode;
 }
 
 type LocationContextProps = {
-  location: Location | null;
+	locationList: Location[]
+  selectedLocation: Location | null;
   loading: boolean;
   selectLocation: (location: Location | null) => void
+	refreshLocations: () => void
 }
 
 const LocationContext = createContext({} as LocationContextProps);
 
 export default function LocationProvider({ children }: LocationProviderProps) {
-	const [location, setLocation] = useState<Location | null>(null);
+	const [locationList, setLocationList] = useState<Location[]>([]);
+	const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
-	const selectLocation = (receivedLocation: Location | null) => {
-		setLocation(receivedLocation);
-		console.log(receivedLocation);
+	const refreshLocations = async () => {
+		const locationList = await findAllLocations({ eventId: 1});
+		setLocationList(locationList);
 	};
 
+	const selectLocation = (receivedLocation: Location | null) => {
+		setSelectedLocation(receivedLocation);
+	};
+
+	useEffect(() => {
+		(async () => {
+			try {
+				setLoading(true);
+				await refreshLocations();
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+			}
+		})();
+	}, []);
+
 	return (
-		<LocationContext.Provider value={{ location, loading, selectLocation }}>
+		<LocationContext.Provider value={{ locationList, refreshLocations, selectedLocation, selectLocation, loading }}>
 			{children}
 		</LocationContext.Provider>
 	);

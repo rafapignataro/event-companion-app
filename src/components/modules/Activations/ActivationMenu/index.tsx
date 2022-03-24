@@ -44,10 +44,10 @@ export const ActivationMenu = () => {
 	const [createForm] = useForm();
 	const [updateForm] = useForm();
 
-	const { location: locationSelected, selectLocation } = useLocation();
+	const { selectedLocation, selectLocation } = useLocation();
 
 	useEffect(() => {
-		if (!locationSelected) {
+		if (!selectedLocation) {
 			selectLocation(null);
 			setActivationFormOpen(false);
 			return;
@@ -56,7 +56,7 @@ export const ActivationMenu = () => {
 			await sleep();
 			setLocationActivations(testActivations);
 		})();
-	}, [locationSelected]);
+	}, [selectedLocation]);
 
 	const openNotification = (type: string, message: string, err?: string) => {
 		if(type == 'success' || type == 'error')
@@ -79,7 +79,6 @@ export const ActivationMenu = () => {
 			const intersects =
 					moment(values.dateRange[0]).isBefore(moment(activation.startDate)) &&
 					moment(values.dateRange[1]).isAfter(moment(activation.endDate));
-			console.log(startIsBetween, endIsBetween, intersects);
 			return startIsBetween === false && endIsBetween === false && intersects === false;
 		});
 		if(!isValidInterval) return createForm.setFields([
@@ -89,7 +88,7 @@ export const ActivationMenu = () => {
 			}
 		]);
 		const requestData = {
-			...locationSelected,
+			...selectedLocation,
 			...values
 		};
 		try {
@@ -98,18 +97,17 @@ export const ActivationMenu = () => {
 			setActivationFormOpen(false);
 			await sleep(); //get const zap = await...
 			setLocationActivations((oldState) => {
-				if(!locationSelected) throw new Error('Location not found');
+				if(!selectedLocation) throw new Error('Location not found');
 				return [
 					...oldState,
 					{ 
 						id: 3, 
-						locationId: locationSelected?.id || 1, 
+						locationId: selectedLocation?.id || 1, 
 						description: values.description, 
 						startDate: values.dateRange[0], 
 						endDate: values.dateRange[1]
 					}
 				];
-				//zap
 			});
 			createForm.resetFields();
 		} catch (e) {
@@ -135,7 +133,6 @@ export const ActivationMenu = () => {
 			const intersects =
 					moment(values.dateRange[0]).isBefore(moment(activation.startDate)) &&
 					moment(values.dateRange[1]).isAfter(moment(activation.endDate));
-			console.log(startIsBetween, endIsBetween, intersects);
 			return startIsBetween === false && endIsBetween === false && intersects === false;
 		});
 		if(!isValidInterval) return createForm.setFields([
@@ -145,7 +142,7 @@ export const ActivationMenu = () => {
 			}
 		]);
 		const requestData = {
-			...locationSelected,
+			...selectedLocation,
 			...values
 		};
 		try {
@@ -154,18 +151,17 @@ export const ActivationMenu = () => {
 			setActivationFormOpen(false);
 			await sleep(); //get const zap = await...
 			setLocationActivations((oldState) => {
-				if(!locationSelected) throw new Error('Location not found');
+				if(!selectedLocation) throw new Error('Location not found');
 				return [
 					...oldState,
 					{ 
 						id: 3, 
-						locationId: locationSelected?.id || 1, 
+						locationId: selectedLocation?.id || 1, 
 						description: values.description, 
 						startDate: values.dateRange[0], 
 						endDate: values.dateRange[1]
 					}
 				];
-				//zap
 			});
 			createForm.resetFields();
 		} catch (e) {
@@ -322,7 +318,7 @@ export const ActivationMenu = () => {
 				<>
 					<Button 
 						style={{ marginBottom: '1em' }}
-						disabled={!locationSelected}
+						disabled={!selectedLocation}
 						size='large'
 						onClick={() => {
 							setActivationFormMode('create');
@@ -331,7 +327,7 @@ export const ActivationMenu = () => {
 					>Criar uma nova ativação</Button>
 					<Button 
 						style={{ marginBottom: '1em' }}
-						disabled={!locationSelected}
+						disabled={!selectedLocation}
 						size='large'
 						onClick={() => {
 							setActivationFormMode('edit');

@@ -7,7 +7,7 @@ export type Location = {
 	description?: string;
 	latitude: number;
 	longitude: number;
-	locationCategoryId: number;
+	locationCategoryCode: string;
 }
 
 export type Visitor = {
