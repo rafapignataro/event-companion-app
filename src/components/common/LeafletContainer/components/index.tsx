@@ -1,8 +1,12 @@
-import { ShoppingOutlined } from '@ant-design/icons';
-import { Badge } from 'antd';
-import { BsCircleFill } from 'react-icons/bs';
+import { useEffect, useState } from 'react';
+import { useLocation } from '../../../../contexts/location';
+import { Location, LocationCategory } from '../../../../services/locations/types';
+
+import { RiRainbowFill } from 'react-icons/ri';
 import { GiHotDog } from 'react-icons/gi';
-import { Location } from '../../../../services/locations/types';
+import { BiStore } from 'react-icons/bi';
+import { GrStatusPlaceholderSmall } from 'react-icons/gr';
+import ActivationBadge from '../../ActivationBadge';
 
 type LocationMarkerIconProperties = {
 	location: Location;
@@ -25,7 +29,8 @@ export const LocationCard = ({ children }: { children: React.ReactNode }) => {
 				background: '#ffffff',
 				boxShadow: '0 1px 3px 0 rgba(0,0,0,0.25)',
 				display: 'flex',
-				alignItems: 'center'
+				alignItems: 'center',
+				transform: 'translateX(-50%)'
 			}}
 		>
 			{children}
@@ -34,6 +39,29 @@ export const LocationCard = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const LocationAvatar = ({ category, zoomLevel, maxZoom }: LocationAvatarProperties) => {
+	const { locationCategoryList } = useLocation();
+	const [avatarProperties, setAvatarProperties] = useState<LocationCategory>({} as LocationCategory);
+
+	useEffect(() => {
+		setAvatarProperties(
+			locationCategoryList?.find(listCategory => listCategory.code === category) ||
+			{} as LocationCategory
+		);
+	}, [locationCategoryList]);
+
+	const iconSwitch = (categoryCode: string) => {
+		switch (categoryCode) {
+		case 'FOOD':
+			return <GiHotDog />;
+		case 'ATTRACTION':
+			return <RiRainbowFill />;
+		case 'SHOPPING':
+			return <BiStore />;
+		default:
+			return <GrStatusPlaceholderSmall />;
+		}
+	};
+
 	return (
 		<div
 			style={{
@@ -41,22 +69,27 @@ export const LocationAvatar = ({ category, zoomLevel, maxZoom }: LocationAvatarP
 				boxShadow: '0 1px 3px 0 rgba(0,0,0,0.25)',
 				border: '.25em solid #ffffff',
 				padding: '.25em',
-				background: '#FFE459',
+				background: avatarProperties.color || '#C7C7C7',
 				fontSize: 30-((maxZoom-zoomLevel)*5),
 				display: 'flex',
 				alignItems:	'center',
 				justifyContent: 'center',
 			}}
 		>
-			{category === 'ZAP' && <ShoppingOutlined />}
-			{category === 'ZAP2' && <GiHotDog />}
-			<GiHotDog />
+			{iconSwitch(category)}
 		</div>
 	);
 };
 
 export const Icon = ({ location, zoomLevel, maxZoom, selected }: LocationMarkerIconProperties) => {
+	const [activationVisible, setActivationVisible] = useState(false);
+
+	useEffect(() => {
+		setActivationVisible(!!location.activations?.find((activation) => activation.active));
+	}, [location]);
+
 	const near = zoomLevel >= maxZoom - 1;
+
 	return (
 		<>
 			<LocationCard>
@@ -75,17 +108,9 @@ export const Icon = ({ location, zoomLevel, maxZoom, selected }: LocationMarkerI
 					right: 0,
 					transform: 'translateX(50%)'
 				}}>
-					<Badge count={<BsCircleFill />} style={{ 
-						color: '#f5222d',
-						borderRadius: '50%',
-						right: '.75em',
-						top: '.75em',
-						border: '.3em solid #fff',
-						width: near ? '1.8em' : '1.5em',
-						height: near ? '1.8em' : '1.5em',
-					}}>
+					<ActivationBadge active={activationVisible} near={near}>
 						<LocationAvatar zoomLevel={zoomLevel} maxZoom={maxZoom} category={location.locationCategoryCode} />
-					</Badge>
+					</ActivationBadge>
 				</div>
 			</LocationCard>
 			{!near && (

@@ -2,15 +2,17 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { parseCookies, setCookie } from 'nookies';
 import { decode } from 'jsonwebtoken';
 import { isAuthenticated } from '../services/authentication/isAuthenticated';
-import { Location } from '../services/locations/types';
+import { Location, LocationCategory } from '../services/locations/types';
 import { findAllLocations } from '../services/locations/findAllLocations';
+import moment from 'moment';
 
 type LocationProviderProps = {
   children: React.ReactNode;
 }
 
 type LocationContextProps = {
-	locationList: Location[]
+	locationList: Location[];
+	locationCategoryList: LocationCategory[];
   selectedLocation: Location | null;
   loading: boolean;
   selectLocation: (location: Location | null) => void
@@ -21,17 +23,49 @@ const LocationContext = createContext({} as LocationContextProps);
 
 export default function LocationProvider({ children }: LocationProviderProps) {
 	const [locationList, setLocationList] = useState<Location[]>([]);
+	const [locationCategoryList, setLocationCategoryList] = useState<LocationCategory[]>([]);
 	const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const refreshLocations = async () => {
-		const locationList = await findAllLocations({ eventId: 1});
+		const locationList = await findAllLocations({ eventId: 1 });
+		// .then((locationList) => locationList.map((location) => {
+		// 	return {
+		// 		...location,
+		// 		activations: location.activations.map((activation) => {
+		// 			const now = moment();
+		// 			return {
+		// 				...activation,
+		// 				active: moment(activation.startDate) <= now && moment(activation.endDate) >= now
+		// 			};
+		// 		})
+		// 	};
+		// }));
 		setLocationList(locationList);
 	};
 
 	const selectLocation = (receivedLocation: Location | null) => {
 		setSelectedLocation(receivedLocation);
 	};
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setLocationList(current => current.map((location) => {
+				return {
+					...location,
+					activations: location.activations?.map((activation) => {
+						const now = moment();
+						return {
+							...activation,
+							active: moment(activation.startDate) <= now && moment(activation.endDate) >= now
+						};
+					})
+				};
+			}));
+			console.log('du dum');
+		}, 5000);
+		return () => clearInterval(timer);
+	}, []);
 
 	useEffect(() => {
 		(async () => {
@@ -46,7 +80,15 @@ export default function LocationProvider({ children }: LocationProviderProps) {
 	}, []);
 
 	return (
-		<LocationContext.Provider value={{ locationList, refreshLocations, selectedLocation, selectLocation, loading }}>
+		<LocationContext.Provider 
+			value={{ 
+				locationList, 
+				locationCategoryList,
+				refreshLocations, 
+				selectedLocation, 
+				selectLocation, 
+				loading 
+			}}>
 			{children}
 		</LocationContext.Provider>
 	);

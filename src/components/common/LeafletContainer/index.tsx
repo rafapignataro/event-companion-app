@@ -1,7 +1,8 @@
 import { Card, Spin } from 'antd';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
-import ReactDOMServer from 'react-dom/server';
-import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import ReactDOM from 'react-dom';
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 import L, { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
 import Title from 'antd/lib/typography/Title';
 import { useLocation } from '../../../contexts/location';
@@ -62,6 +63,8 @@ const UserLocation = ({ showUserLocation }: UserLocationProperties) => {
 };
 
 const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMarkerProperties) => {
+	const leafletInstance = L;
+	const mapInstance = useMap();
 	const [zoomLevel, setZoomLevel] = useState(18);
 	const [maxZoom, setMaxZoom] = useState(19);
 
@@ -75,13 +78,12 @@ const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMa
 		},
 	});
 
-	const mapInstance = useMap();
+	const iconAnchor = document.createElement('div');
 
-	const leafletInstance = L;
+	ReactDOM.hydrate(<Icon key={location.name} location={location} zoomLevel={zoomLevel} maxZoom={maxZoom} selected={selected} />, iconAnchor);
+
 	const icon = leafletInstance.divIcon({
-		html: ReactDOMServer.renderToString(
-			<Icon location={location} zoomLevel={zoomLevel} maxZoom={maxZoom} selected={selected} />
-		),
+		html: iconAnchor,
 		className: 'leaflet-marker-card'
 		// iconSize: [100, (75-(maxZoom-zoomLevel)*35)],
 		// iconAnchor: [32, 64],
@@ -92,8 +94,9 @@ const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMa
 	});
 
 	return (
-		<Marker 		
+		<Marker
 			icon={icon}
+			title={location.name}
 			position={latLong}
 			eventHandlers={{
 				click: () => { 
@@ -101,8 +104,7 @@ const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMa
 					setLocation(); 
 				},
 			}}
-		>
-		</Marker>
+		/>
 	);
 };
 
