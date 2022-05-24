@@ -6,6 +6,7 @@ import { Activation } from '../../../../services/activations/types';
 import { sleep } from '../../../../utils/helpers/sleep';
 import { useForm } from 'antd/lib/form/Form';
 import { useLocation } from '../../../../contexts/location';
+import { updateActivation } from '../../../../services/activations/updateActivation';
 
 type FormFields = {
 	description: string;
@@ -13,23 +14,6 @@ type FormFields = {
 }
 
 type ActivationFormMode = 'create' | 'edit';
-
-const testActivations = [
-	{
-		id: 1,
-		locationId: 1,
-		description: 'Ativação muito doidja',
-		startDate: new Date('2022-03-17T19:30:00.000Z'),
-		endDate: new Date('2022-03-17T22:30:00.000Z'),
-	},
-	{
-		id: 2,
-		locationId: 1,
-		description: 'Ativação muito doidja 2: electric boogaloo',
-		startDate: new Date('2022-03-19T15:30:00.000Z'),
-		endDate: new Date('2022-03-20T18:30:00.000Z'),
-	},
-];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const disabledDate = (current: any) => {
@@ -39,12 +23,12 @@ const disabledDate = (current: any) => {
 export const ActivationMenu = () => {
 	const [activationFormOpen, setActivationFormOpen] = useState(false);
 	const [activationFormMode, setActivationFormMode] = useState<ActivationFormMode>('create');
-	const [locationActivations, setLocationActivations] = useState<Activation[]>(testActivations);
+	// const [locationActivations, setLocationActivations] = useState<Activation[]>([]);
 	const [selectedActivation, setSelectedActivation] = useState<Activation | null>();
 	const [createForm] = useForm();
 	const [updateForm] = useForm();
 
-	const { selectedLocation, selectLocation } = useLocation();
+	const { selectedLocation, selectLocation, refreshLocations } = useLocation();
 
 	useEffect(() => {
 		if (!selectedLocation) {
@@ -54,7 +38,7 @@ export const ActivationMenu = () => {
 		}
 		(async () => {
 			await sleep();
-			setLocationActivations(testActivations);
+			// setLocationActivations(selectedLocation.activations);
 		})();
 	}, [selectedLocation]);
 
@@ -65,7 +49,7 @@ export const ActivationMenu = () => {
 	};
 
 	const onFinishCreate = async (values: FormFields) => {
-		const isValidInterval = locationActivations.every((activation) => {
+		const isValidInterval = selectedLocation?.activations.every((activation) => {
 			const startIsBetween =
 				moment(values.dateRange[0]).isBetween(
 					moment(activation.startDate),
@@ -95,20 +79,23 @@ export const ActivationMenu = () => {
 			await sleep(); //post
 			openNotification('success', 'Dados enviados com sucesso');
 			setActivationFormOpen(false);
+			
 			await sleep(); //get const zap = await...
-			setLocationActivations((oldState) => {
-				if(!selectedLocation) throw new Error('Location not found');
-				return [
-					...oldState,
-					{ 
-						id: 3, 
-						locationId: selectedLocation?.id || 1, 
-						description: values.description, 
-						startDate: values.dateRange[0], 
-						endDate: values.dateRange[1]
-					}
-				];
-			});
+			// TODO: Atualizar ativação na location
+			// setLocationActivations((oldState) => {
+			// 	if(!selectedLocation) throw new Error('Location not found');
+			// 	return [
+			// 		...oldState,
+			// 		{ 
+			// 			id: 3, 
+			// 			locationId: selectedLocation?.id || 1, 
+			// 			description: values.description, 
+			// 			startDate: values.dateRange[0], 
+			// 			endDate: values.dateRange[1]
+			// 		}
+			// 	];
+			// });
+			await refreshLocations();
 			createForm.resetFields();
 		} catch (e) {
 			await sleep();
@@ -118,7 +105,9 @@ export const ActivationMenu = () => {
 	};
 
 	const onFinishUpdate = async (values: FormFields) => {
-		const isValidInterval = locationActivations.every((activation) => {
+		if(!selectedLocation || !selectedActivation) return;
+
+		const isValidInterval = selectedLocation.activations.every((activation) => {
 			if(activation.id === selectedActivation?.id) return true;
 			const startIsBetween =
 				moment(values.dateRange[0]).isBetween(
@@ -141,31 +130,26 @@ export const ActivationMenu = () => {
 				errors: ['JÁ EXISTE UMA ATIVAÇÃO NESTE INTERVALO']
 			}
 		]);
-		const requestData = {
-			...selectedLocation,
-			...values
-		};
+
 		try {
-			await sleep(); //post
+			await updateActivation({
+				id: selectedActivation.id,
+				data: {
+					locationId: selectedLocation.id, 
+					description: values.description, 
+					startDate: values.dateRange[0], 
+					endDate: values.dateRange[1]
+				}
+			});
+
 			openNotification('success', 'Dados enviados com sucesso');
 			setActivationFormOpen(false);
-			await sleep(); //get const zap = await...
-			setLocationActivations((oldState) => {
-				if(!selectedLocation) throw new Error('Location not found');
-				return [
-					...oldState,
-					{ 
-						id: 3, 
-						locationId: selectedLocation?.id || 1, 
-						description: values.description, 
-						startDate: values.dateRange[0], 
-						endDate: values.dateRange[1]
-					}
-				];
-			});
-			createForm.resetFields();
+
+			selectLocation(null);
+			setSelectedActivation(null);
+			await refreshLocations();
+			updateForm.resetFields();
 		} catch (e) {
-			await sleep();
 			openNotification('error', 'Houve um erro ao enviar os dados');
 			setActivationFormOpen(false);
 		}
@@ -229,12 +213,12 @@ export const ActivationMenu = () => {
 					) : (
 						<>
 							<Select
-								onChange={(e) => setSelectedActivation(e)}
+								onChange={(e) => setSelectedActivation(selectedLocation?.activations.find(activation => activation.id === e))}
 								placeholder=" - "
 								size='large'
-								value={selectedActivation}
+								value={selectedActivation?.id}
 							>
-								{locationActivations.map((activation) => {
+								{selectedLocation?.activations.map((activation) => {
 									return (
 										<Select.Option 
 											key={activation.id} 
@@ -253,6 +237,10 @@ export const ActivationMenu = () => {
 									labelCol={{ span: 24 }}
 									wrapperCol={{ span: 24 }}
 									form={updateForm}
+									initialValues={{ 
+										...selectedActivation,
+										dateRange: [moment(selectedActivation.startDate), moment(selectedActivation.endDate)]
+									}}
 								>
 									<Form.Item
 										label="DESCRIÇÃO"
