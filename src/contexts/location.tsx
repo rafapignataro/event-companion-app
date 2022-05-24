@@ -63,7 +63,7 @@ export default function LocationProvider({ children }: LocationProviderProps) {
 				};
 			}));
 			console.log('du dum');
-		}, 5000);
+		}, 1000 * 5); // 60s
 		return () => clearInterval(timer);
 	}, []);
 
