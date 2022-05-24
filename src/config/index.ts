@@ -10,7 +10,7 @@ type ConfigOptions = {
 const config: ConfigOptions = {
 	development: {
 		env: 'development',
-		apiURL: 'https://event-companion-api.herokuapp.com'
+		apiURL: 'http://localhost:3001'
 	},
 	staging: {
 		env: 'staging',

@@ -8,7 +8,8 @@ export type Location = {
 	description?: string;
 	latitude: number;
 	longitude: number;
-	locationCategoryCode: string;
+	locationCategoryId: number;
+	locationCategory: LocationCategory
 	activations: Activation[];
 }
 

@@ -8,14 +8,14 @@ import { updateLocation } from '../../../../services/locations/updateLocation';
 type FormFields = {
 	name: string,
 	description?: string,
-	locationCategoryId: number
+	locationCategoryCode: string
 }
 
 export const LocationMenu = () => {
 	const [locationFormOpen, setLocationFormOpen] = useState(false);
 	const [locationForm] = Form.useForm();
 
-	const { selectedLocation, selectLocation, refreshLocations } = useLocation();
+	const { selectedLocation, selectLocation, refreshLocations  } = useLocation();
 
 	useEffect(() => {
 		if (!selectedLocation) return setLocationFormOpen(false);
@@ -37,10 +37,13 @@ export const LocationMenu = () => {
 		};
 		try {
 			if (!requestData.eventId) return;
+			
 			await updateLocation({ id, locationData: requestData });
+			await refreshLocations();
+
+			selectLocation(null);
 			openNotification('success', 'Dados enviados com sucesso');
 			setLocationFormOpen(false);
-			refreshLocations();
 		} catch (e) {
 			openNotification('error', 'Houve um erro ao enviar os dados');
 			setLocationFormOpen(false);
@@ -59,9 +62,9 @@ export const LocationMenu = () => {
 						labelCol={{ span: 24 }}
 						initialValues={{
 							...selectedLocation,
-							locationCategoryId: 
-								locationCategories.find((category) => category.code === selectedLocation?.locationCategoryCode)
+							locationCategoryCode: selectedLocation?.locationCategory.code
 						}}
+						onValuesChange={(changedValues, values) => console.log(changedValues, values)}
 					>
 						<Form.Item
 							label="NOME"
@@ -86,7 +89,7 @@ export const LocationMenu = () => {
 
 						<Form.Item 
 							label="CATEGORIA"
-							name="locationCategoryId"
+							name="locationCategoryCode"
 							rules={[{ required: true, message: 'ESCOLHA UMA CATEGORIA PARA O LOCAL' }]}
 						>
 							<Select
@@ -94,8 +97,9 @@ export const LocationMenu = () => {
 								size='large'
 							>
 								{ locationCategories.map((category) => {
+									console.log(category);
 									return (
-										<Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
+										<Select.Option key={category.code} value={category.code}>{category.name}</Select.Option>
 									);
 								}) }
 							</Select>

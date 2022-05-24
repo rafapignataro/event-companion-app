@@ -16,7 +16,7 @@ type LocationContextProps = {
   selectedLocation: Location | null;
   loading: boolean;
   selectLocation: (location: Location | null) => void
-	refreshLocations: () => void
+	refreshLocations: () => Promise<void>
 }
 
 const LocationContext = createContext({} as LocationContextProps);
