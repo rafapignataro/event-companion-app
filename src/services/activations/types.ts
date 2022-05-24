@@ -4,4 +4,5 @@ export type Activation = {
 	description: string;
 	startDate: Date;
 	endDate: Date;
+	active?: boolean;
 }

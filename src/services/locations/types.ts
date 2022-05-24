@@ -1,3 +1,4 @@
+import { Activation } from '../activations/types';
 
 export type Location = {
 	id: number;
@@ -7,7 +8,15 @@ export type Location = {
 	description?: string;
 	latitude: number;
 	longitude: number;
-	locationCategoryId: number;
+	locationCategoryCode: string;
+	activations: Activation[];
+}
+
+export type LocationCategory = {
+	id: number;
+	name: string;
+	code: string;
+	color: string;
 }
 
 export type Visitor = {

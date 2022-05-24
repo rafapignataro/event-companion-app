@@ -3,7 +3,7 @@ import { Button, Form, Input, notification, Select, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useLocation } from '../../../../contexts/location';
 import { locationCategories } from '../../../../data/locationCategories';
-import { sleep } from '../../../../utils/helpers/sleep';
+import { updateLocation } from '../../../../services/locations/updateLocation';
 
 type FormFields = {
 	name: string,
@@ -13,14 +13,14 @@ type FormFields = {
 
 export const LocationMenu = () => {
 	const [locationFormOpen, setLocationFormOpen] = useState(false);
+	const [locationForm] = Form.useForm();
 
-	const { location: locationSelected, selectLocation } = useLocation();
+	const { selectedLocation, selectLocation, refreshLocations } = useLocation();
 
 	useEffect(() => {
-		if (!locationSelected) {
-			setLocationFormOpen(false);
-		}
-	}, [locationSelected]);
+		if (!selectedLocation) return setLocationFormOpen(false);
+		return locationForm.setFieldsValue(selectedLocation);
+	}, [selectedLocation]);
 
 	const openNotification = (type: string, message: string, err?: string) => {
 		if(type == 'success' || type == 'error')
@@ -29,18 +29,19 @@ export const LocationMenu = () => {
 	};
 
 	const onFinish = async (values: FormFields) => {
+		if (!selectedLocation) return;
+		const { id } = selectedLocation;
 		const requestData = {
-			...locationSelected,
+			...selectedLocation,
 			...values
 		};
 		try {
-			await sleep();
-			console.log('Valores do formulário: ', requestData);
+			if (!requestData.eventId) return;
+			await updateLocation({ id, locationData: requestData });
 			openNotification('success', 'Dados enviados com sucesso');
 			setLocationFormOpen(false);
-			throw new Error('500');
+			refreshLocations();
 		} catch (e) {
-			await sleep();
 			openNotification('error', 'Houve um erro ao enviar os dados');
 			setLocationFormOpen(false);
 		}
@@ -51,13 +52,15 @@ export const LocationMenu = () => {
 			{locationFormOpen ? (
 				<>
 					<Form
+						form={locationForm}
 						name="locationForm"
 						onFinish={onFinish}
 						autoComplete="off"
 						labelCol={{ span: 24 }}
 						initialValues={{
-							...locationSelected,
-							locationCategoryId: locationCategories.find((category) => category.id === locationSelected?.locationCategoryId)
+							...selectedLocation,
+							locationCategoryId: 
+								locationCategories.find((category) => category.code === selectedLocation?.locationCategoryCode)
 						}}
 					>
 						<Form.Item
@@ -117,12 +120,12 @@ export const LocationMenu = () => {
 			) : (
 				<>
 					<Button 
-						disabled={!locationSelected}
+						disabled={!selectedLocation}
 						onClick={() => setLocationFormOpen(true)}
 						size='large'
 					>Editar um local</Button>
 
-					{!locationSelected && (
+					{!selectedLocation && (
 						<Typography.Title 
 							level={4} 
 							style={{ textAlign: 'center', margin: '1em 0' }}

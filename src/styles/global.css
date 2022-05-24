@@ -1,12 +1,35 @@
 @import '~antd/dist/antd.css';
 
+@font-face {
+  font-family: Maax-Regular;
+  src: url(../../public/fonts/Maax-Regular.woff);
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Gilroy-Extrabold;
+  src: url(../../public/fonts/Gilroy-ExtraBold.woff);
+  font-weight: 800;
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: 'Maax-Regular';
 }
 
 html, body, #__next {
   height: 100vh;
   width: 100%;
+}
+
+.leaflet-div-icon {
+	border: none !important;
+	background: none !important;
+}
+
+.leaflet-marker-card {
+  width: unset !important;
+  height: unset !important;
 }

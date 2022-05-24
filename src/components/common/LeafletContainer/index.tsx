@@ -1,23 +1,15 @@
 import { Card, Spin } from 'antd';
-import Head from 'next/head';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 import L, { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
 import Title from 'antd/lib/typography/Title';
 import { useLocation } from '../../../contexts/location';
 import { Location } from '../../../services/locations/types';
-import { findAllLocations } from '../../../services/locations/findAllLocations';
-
-const test = {
-	id: 1,
-	eventId: 1,
-	brandId: 1,
-	name: 'Local de teste',
-	description: '',
-	latitude: 0,
-	longitude: 0,
-	locationCategoryId: 1,
-};
+import { LoadingScreen } from '../LoadingScreen';
+import 'leaflet/dist/leaflet.css';
+import { Icon } from './components';
 
 type AnimatedPanning = {
 	animateRef: MutableRefObject<boolean>;
@@ -30,7 +22,9 @@ type LocationMarkerProperties = {
 	latLong: [number, number];
 	location: Location;
 	setLocation: () => void;
+	selected: boolean;
 }
+
 type MapProperties = {
 	showUserLocation?: boolean;
 	mapCornerStart: {lat: number, lng: number, alt?: number | undefined};
@@ -68,14 +62,44 @@ const UserLocation = ({ showUserLocation }: UserLocationProperties) => {
 	);
 };
 
-const LocationMarker = ({ latLong, location, setLocation }: LocationMarkerProperties) => {
+const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMarkerProperties) => {
+	const leafletInstance = L;
 	const mapInstance = useMap();
+	const [zoomLevel, setZoomLevel] = useState(18);
+	const [maxZoom, setMaxZoom] = useState(19);
+
+	const map = useMapEvents({
+		load: () => {
+			setZoomLevel(map.getZoom());
+			setMaxZoom(map.getMaxZoom());
+		},
+		zoom: () => {
+			setZoomLevel(map.getZoom());
+		},
+	});
+
+	const iconAnchor = document.createElement('div');
+
+	ReactDOM.hydrate(<Icon key={location.name} location={location} zoomLevel={zoomLevel} maxZoom={maxZoom} selected={selected} />, iconAnchor);
+
+	const icon = leafletInstance.divIcon({
+		html: iconAnchor,
+		className: 'leaflet-marker-card'
+		// iconSize: [100, (75-(maxZoom-zoomLevel)*35)],
+		// iconAnchor: [32, 64],
+		// popupAnchor: undefined,
+		// shadowUrl: undefined,
+		// shadowSize: undefined,
+		// shadowAnchor: undefined
+	});
+
 	return (
-		<Marker 
+		<Marker
+			icon={icon}
+			title={location.name}
 			position={latLong}
 			eventHandlers={{
 				click: () => { 
-					console.log(location);
 					mapInstance.flyTo(latLong, mapInstance.getMaxZoom());
 					setLocation(); 
 				},
@@ -88,15 +112,10 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 	const [hasMounted, setHasMounted] = useState(false);
 	const mapBounds = latLngBounds(convertCoordinates(mapCornerStart), mapCornerEnd);
 	const animateRef = useRef(true);
-	const { selectLocation } = useLocation();
-
-
-	const [locations, setLocations] = useState<Location[]>([]);
+	const { locationList, selectedLocation, selectLocation, loading } = useLocation();
 
 	useEffect(() => {
 		setHasMounted(true);
-
-		findAllLocations({ eventId: 1}).then(locations => setLocations(locations));
 	}, []);
 	
 	return (
@@ -104,18 +123,13 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 			<Title style={{textAlign: 'center'}}>{mapTitle}</Title>
 			<Card style={{minHeight: '600px'}}>
 				<div style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
-					<Head>
-						<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-							integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-							crossOrigin=""
-						/>
-					</Head>
 					{ hasMounted ? (
 						<div id="map" style={{ height: '100%'}}>
 							<MapContainer 
 								center={[-23.701, -46.697]} 
 								zoom={18}
 								minZoom={17}
+								maxZoom={19}
 								style={{height: '100%'}}
 								maxBoundsViscosity={1.0}
 								maxBounds={mapBounds}
@@ -124,20 +138,26 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 								]}
 							>
 								<TileLayer
+									maxZoom={19}
+									maxNativeZoom={19}
+									minZoom={17}
 									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 									
 								/>
 								<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
 								<UserLocation showUserLocation={showUserLocation} />
-								{locations.map(location => (
-									<LocationMarker
-										key={location.id}
-										latLong={[location.latitude, location.longitude]}
-										location={location}
-										setLocation={() => selectLocation(location)}
-									/>
-								))}
+								{!loading ? (
+									locationList.map(location => (
+										<LocationMarker
+											key={location.id}
+											latLong={[location.latitude, location.longitude]}
+											location={location}
+											setLocation={() => selectLocation(location)}
+											selected={selectedLocation?.id === location.id}
+										/>
+									))
+								) : <LoadingScreen />}
 								
 							</MapContainer>
 						</div>

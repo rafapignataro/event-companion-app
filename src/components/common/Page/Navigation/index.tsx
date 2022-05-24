@@ -1,10 +1,10 @@
 
-import { MenuOutlined, ScheduleFilled, ShopFilled, SoundFilled } from '@ant-design/icons';
+import { LogoutOutlined, MenuOutlined, ScheduleFilled, ShopFilled, SoundFilled } from '@ant-design/icons';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 import { Layout, Menu, Typography, Grid, Drawer, Button } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { BsVinylFill } from 'react-icons/bs';
 import { useUser } from '../../../../contexts/user';
 import styles from './styles.module.css';
 
@@ -19,7 +19,7 @@ const routes = [
 	{ 
 		name: 'Locais', 
 		path: '/locations', 
-		icon: <ShopFilled style={{fontSize: '1em', marginRight: '0.8em'}} />
+		icon: <FaMapMarkerAlt style={{fontSize: '1em', marginRight: '0.8em'}} />
 	},
 	{ 
 		name: 'Ativações', 
@@ -89,8 +89,8 @@ export const Navigation = ({ selectedPage }: NavigationProps) => {
 						})}
 						<Menu.Item 
 							key={'biruliru'} 
-							style={{fontSize: '1.2em'}} 
-							icon={<SoundFilled style={{fontSize: '1em', marginRight: '0.8em'}} />}
+							style={{fontSize: '1.2em', marginTop: 'auto'}} 
+							icon={<LogoutOutlined style={{fontSize: '1em', marginRight: '0.8em'}} />}
 							onClick={() => logoutUser()}
 						>
 								Logout
@@ -128,7 +128,7 @@ export const Navigation = ({ selectedPage }: NavigationProps) => {
 							<Menu.Item 
 								key={'biruliru'} 
 								style={{fontSize: '1.2em'}} 
-								icon={<SoundFilled style={{fontSize: '1em', marginRight: '0.8em'}} />}
+								icon={<LogoutOutlined style={{fontSize: '1em', marginRight: '0.8em'}} />}
 								onClick={() => logoutUser()}
 							>
 								Logout

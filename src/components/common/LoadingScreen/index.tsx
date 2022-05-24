@@ -11,7 +11,7 @@ export const LoadingScreen = () => {
 			justifyContent: 'center',
 			alignItems: 'center'
 		}}>
-			<Image src="/svg/logo.svg" width="150" height="150" />
+			{/* <Image src="/svg/logo.svg" width="150" height="150" /> */}
 			<Spin tip="Carregando..."/>
 		</div>
 	);
