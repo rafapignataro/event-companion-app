@@ -64,7 +64,6 @@ export const LocationMenu = () => {
 							...selectedLocation,
 							locationCategoryCode: selectedLocation?.locationCategory.code
 						}}
-						onValuesChange={(changedValues, values) => console.log(changedValues, values)}
 					>
 						<Form.Item
 							label="NOME"
@@ -96,12 +95,7 @@ export const LocationMenu = () => {
 								placeholder=" - "
 								size='large'
 							>
-								{ locationCategories.map((category) => {
-									console.log(category);
-									return (
-										<Select.Option key={category.code} value={category.code}>{category.name}</Select.Option>
-									);
-								}) }
+								{ locationCategories.map((category) => <Select.Option key={category.code} value={category.code}>{category.name}</Select.Option>) }
 							</Select>
 						</Form.Item>
 

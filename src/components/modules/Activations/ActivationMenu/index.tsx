@@ -90,12 +90,6 @@ export const ActivationMenu = () => {
 		]);
 
 		try {
-			console.log({
-				locationId: selectedLocation.id, 
-				description: values.description, 
-				startDate: values.dateRange[0], 
-				endDate: values.dateRange[1]
-			});
 			await createActivation({
 				locationId: selectedLocation.id, 
 				description: values.description, 
@@ -116,7 +110,6 @@ export const ActivationMenu = () => {
 	};
 
 	const onFinishUpdate = async (values: FormFields) => {
-		console.log(123);
 		if(!selectedLocation || !selectedActivation) return;
 
 		const isValidInterval = validateSelectedDateRange(
