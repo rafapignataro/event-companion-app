@@ -1,5 +1,5 @@
 
-import { LogoutOutlined, MenuOutlined, ScheduleFilled, ShopFilled, SoundFilled } from '@ant-design/icons';
+import { LogoutOutlined, MenuOutlined, SoundFilled } from '@ant-design/icons';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { Layout, Menu, Typography, Grid, Drawer, Button } from 'antd';
 import { Header } from 'antd/lib/layout/layout';

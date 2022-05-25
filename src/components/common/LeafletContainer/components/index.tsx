@@ -81,7 +81,7 @@ export const LocationAvatar = ({ category, zoomLevel, maxZoom }: LocationAvatarP
 	);
 };
 
-export const Icon = ({ location, zoomLevel, maxZoom, selected }: LocationMarkerIconProperties) => {
+export const Icon = ({ location, zoomLevel, maxZoom }: LocationMarkerIconProperties) => {
 	const [activationVisible, setActivationVisible] = useState(false);
 
 	useEffect(() => {

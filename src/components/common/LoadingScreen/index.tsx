@@ -1,5 +1,4 @@
 import { Spin } from 'antd';
-import Image from 'next/image';
 
 export const LoadingScreen = () => {
 	return (
