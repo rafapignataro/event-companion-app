@@ -14,8 +14,8 @@ export const Locations = () => {
 			<LocationProvider>
 				<Row>
 					<Col span={24} xl={12}>
-						<MapWithNoSSR 
-							showUserLocation={false}
+						<MapWithNoSSR
+							showUserLocation={true}
 							mapCornerStart={
 								{ lat: -23.707487913664902, lng: -46.70137882232666, alt: undefined }
 							}
