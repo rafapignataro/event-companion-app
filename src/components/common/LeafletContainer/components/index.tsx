@@ -22,7 +22,7 @@ type LocationAvatarProperties = {
 }
 
 export const LocationCard = ({ children }: { children: React.ReactNode }) => {
-	return(
+	return (
 		<div
 			style={{
 				borderRadius: '1em',
@@ -51,14 +51,14 @@ export const LocationAvatar = ({ category, zoomLevel, maxZoom }: LocationAvatarP
 
 	const iconSwitch = (categoryCode: string) => {
 		switch (categoryCode) {
-		case 'FOOD':
-			return <GiHotDog />;
-		case 'ATTRACTION':
-			return <RiRainbowFill />;
-		case 'SHOPPING':
-			return <BiStore />;
-		default:
-			return <GrStatusPlaceholderSmall />;
+			case 'FOOD':
+				return <GiHotDog />;
+			case 'ATTRACTION':
+				return <RiRainbowFill />;
+			case 'SHOPPING':
+				return <BiStore />;
+			default:
+				return <GrStatusPlaceholderSmall />;
 		}
 	};
 
@@ -70,9 +70,9 @@ export const LocationAvatar = ({ category, zoomLevel, maxZoom }: LocationAvatarP
 				border: '.25em solid #ffffff',
 				padding: '.25em',
 				background: avatarProperties.color || '#C7C7C7',
-				fontSize: 30-((maxZoom-zoomLevel)*5),
+				fontSize: 30 - ((maxZoom - zoomLevel) * 5),
 				display: 'flex',
-				alignItems:	'center',
+				alignItems: 'center',
 				justifyContent: 'center',
 			}}
 		>
@@ -94,11 +94,11 @@ export const Icon = ({ location, zoomLevel, maxZoom }: LocationMarkerIconPropert
 		<>
 			<LocationCard>
 				<h2 style={{
-					marginRight: '1em', 
+					marginRight: '1em',
 					marginBottom: '0',
 					whiteSpace: 'nowrap',
 					fontFamily: 'Gilroy-Extrabold',
-					fontSize: 16-((maxZoom-zoomLevel)*3),
+					fontSize: 16 - ((maxZoom - zoomLevel) * 3),
 					padding: near ? '0.75em 2em' : '0'
 				}}>
 					{near && location.name}
@@ -109,7 +109,7 @@ export const Icon = ({ location, zoomLevel, maxZoom }: LocationMarkerIconPropert
 					transform: 'translateX(50%)'
 				}}>
 					<ActivationBadge active={activationVisible} near={near}>
-						<LocationAvatar zoomLevel={zoomLevel} maxZoom={maxZoom} category={location.locationCategoryCode} />
+						<LocationAvatar zoomLevel={zoomLevel} maxZoom={maxZoom} category={location.locationCategory.code} />
 					</ActivationBadge>
 				</div>
 			</LocationCard>
@@ -119,12 +119,12 @@ export const Icon = ({ location, zoomLevel, maxZoom }: LocationMarkerIconPropert
 					bottom: 0,
 					transform: 'translate(0, 200%)',
 					width: 0,
-					height: 0, 
+					height: 0,
 					borderLeft: '10px solid transparent',
 					borderRight: '10px solid transparent',
 					borderTop: '15px solid #ffffff',
 					zIndex: -2,
-				}}/>
+				}} />
 			)}
 		</>
 	);
