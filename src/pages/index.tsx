@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 
-import { Locations } from '../components/modules/Locations';
+import { Event } from '../components/modules/Event';
 
-const Home: NextPage = () => <Locations />;
+const EventPage: NextPage = () => <Event />;
 
-export default Home;
+export default EventPage;

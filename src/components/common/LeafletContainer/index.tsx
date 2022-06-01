@@ -27,8 +27,8 @@ type LocationMarkerProperties = {
 
 type MapProperties = {
 	showUserLocation?: boolean;
-	mapCornerStart: {lat: number, lng: number, alt?: number | undefined};
-	mapCornerEnd: {lat: number, lng: number, alt?: number | undefined};
+	mapCornerStart: { lat: number, lng: number, alt?: number | undefined };
+	mapCornerEnd: { lat: number, lng: number, alt?: number | undefined };
 	mapTitle?: string;
 }
 
@@ -58,7 +58,7 @@ const UserLocation = ({ showUserLocation }: UserLocationProperties) => {
 		});
 	}, [mapInstance]);
 	return position === null ? null : (
-		<Marker position={position}/>
+		<Marker position={position} />
 	);
 };
 
@@ -99,9 +99,9 @@ const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMa
 			title={location.name}
 			position={latLong}
 			eventHandlers={{
-				click: () => { 
+				click: () => {
 					mapInstance.flyTo(latLong, mapInstance.getMaxZoom());
-					setLocation(); 
+					setLocation();
 				},
 			}}
 		/>
@@ -117,20 +117,19 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 	useEffect(() => {
 		setHasMounted(true);
 	}, []);
-	
+
 	return (
 		<>
-			<Title style={{textAlign: 'center'}}>{mapTitle}</Title>
-			<Card style={{minHeight: '600px'}}>
-				<div style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
-					{ hasMounted ? (
-						<div id="map" style={{ height: '100%'}}>
-							<MapContainer 
-								center={[-23.701, -46.697]} 
+			<Card style={{ minHeight: '100%' }}>
+				<div style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+					{hasMounted ? (
+						<div id="map" style={{ height: '100%', width: '100%' }}>
+							<MapContainer
+								center={[-23.701, -46.697]}
 								zoom={18}
 								minZoom={17}
 								maxZoom={19}
-								style={{height: '100%'}}
+								style={{ height: '100%' }}
 								maxBoundsViscosity={1.0}
 								maxBounds={mapBounds}
 								layers={[
@@ -143,7 +142,7 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 									minZoom={17}
 									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-									
+
 								/>
 								<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
 								<UserLocation showUserLocation={showUserLocation} />
@@ -158,11 +157,10 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 										/>
 									))
 								) : <LoadingScreen />}
-								
 							</MapContainer>
 						</div>
 					) : (
-						<Spin tip="Carregando..."/>
+						<Spin tip="Carregando..." />
 					)}
 				</div>
 			</Card>

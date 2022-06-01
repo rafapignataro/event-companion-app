@@ -7,8 +7,8 @@ import { LoadingScreen } from '../LoadingScreen';
 import { Navigation } from './Navigation';
 
 type PageProps = {
-  title: string;
-  children: React.ReactNode
+	title: string;
+	children: React.ReactNode
 }
 
 export const Page = ({ title, children }: PageProps) => {
@@ -17,7 +17,7 @@ export const Page = ({ title, children }: PageProps) => {
 
 	const currentPage = router.pathname || '/';
 
-	if(loading) return <LoadingScreen />;
+	if (loading) return <LoadingScreen />;
 
 	return (
 		<>
@@ -26,8 +26,7 @@ export const Page = ({ title, children }: PageProps) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<Layout style={{ minHeight: '100vh' }}>
-				<Navigation selectedPage={currentPage} />
-				<Content style={{position: 'relative', padding: '1em'}}>
+				<Content style={{ position: 'relative', height: '100vh' }}>
 					{children}
 				</Content>
 			</Layout>
