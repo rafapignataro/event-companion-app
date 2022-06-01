@@ -1,7 +1,7 @@
 import { Card, Spin } from 'antd';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, useMapEvents, ZoomControl } from 'react-leaflet';
 import { Marker } from 'react-leaflet';
 import L, { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
 import Title from 'antd/lib/typography/Title';
@@ -119,52 +119,50 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 	}, []);
 
 	return (
-		<>
-			<Card style={{ minHeight: '100%' }}>
-				<div style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
-					{hasMounted ? (
-						<div id="map" style={{ height: '100%', width: '100%' }}>
-							<MapContainer
-								center={[-23.701, -46.697]}
-								zoom={18}
-								minZoom={17}
-								maxZoom={19}
-								style={{ height: '100%' }}
-								maxBoundsViscosity={1.0}
-								maxBounds={mapBounds}
-								layers={[
-									L.tileLayer('')
-								]}
-							>
-								<TileLayer
-									maxZoom={19}
-									maxNativeZoom={19}
-									minZoom={17}
-									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+		<div style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}>
+			{hasMounted ? (
+				<div id="map" style={{ height: '100%', width: '100%' }}>
+					<MapContainer
+						center={[-23.701, -46.697]}
+						zoom={18}
+						minZoom={17}
+						maxZoom={19}
+						style={{ height: '100%' }}
+						maxBoundsViscosity={1.0}
+						maxBounds={mapBounds}
+						layers={[
+							L.tileLayer('')
+						]}
+						zoomControl={false}
+					>
+						<TileLayer
+							maxZoom={19}
+							maxNativeZoom={19}
+							minZoom={17}
+							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 
+						/>
+						<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
+						<UserLocation showUserLocation={showUserLocation} />
+						{!loading ? (
+							locationList.map(location => (
+								<LocationMarker
+									key={location.id}
+									latLong={[location.latitude, location.longitude]}
+									location={location}
+									setLocation={() => selectLocation(location)}
+									selected={selectedLocation?.id === location.id}
 								/>
-								<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
-								<UserLocation showUserLocation={showUserLocation} />
-								{!loading ? (
-									locationList.map(location => (
-										<LocationMarker
-											key={location.id}
-											latLong={[location.latitude, location.longitude]}
-											location={location}
-											setLocation={() => selectLocation(location)}
-											selected={selectedLocation?.id === location.id}
-										/>
-									))
-								) : <LoadingScreen />}
-							</MapContainer>
-						</div>
-					) : (
-						<Spin tip="Carregando..." />
-					)}
+							))
+						) : <LoadingScreen />}
+						<ZoomControl position='bottomleft' />
+					</MapContainer>
 				</div>
-			</Card>
-		</>
+			) : (
+				<Spin tip="Carregando..." />
+			)}
+		</div>
 	);
 };
 
