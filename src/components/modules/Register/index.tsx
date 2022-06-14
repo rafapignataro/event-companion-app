@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Page } from '../../common/Page';
 import { Button, Col, Form, Input, Row, notification, Typography } from 'antd';
 import { createCustomer } from '../../../services/customers/createCustomer';
+import { useState } from 'react';
 
 type FormFields = {
 	name: string;
@@ -16,6 +17,7 @@ type FormFields = {
 
 export const Register = () => {
 	const [registerForm] = useForm();
+	const [loading, setLoading] = useState(false);
 
 	const openNotification = (type: string, message: string, err?: string) => {
 		if (type == 'success' || type == 'error')
@@ -32,6 +34,8 @@ export const Register = () => {
 				}
 			]);
 
+			setLoading(true);
+
 			await createCustomer({ name, email, password, passwordRepeated });
 
 			openNotification('success', 'Successfully registered!');
@@ -39,6 +43,8 @@ export const Register = () => {
 		} catch (err) {
 			console.log(err)
 			openNotification('error', err.message || 'There was an error, try again later!');
+		} finally {
+			setLoading(false);
 		}
 	}
 
@@ -70,7 +76,7 @@ export const Register = () => {
 								required
 								rules={[{ required: true, message: 'Please, provide your name!' }]}
 							>
-								<Input placeholder="Name" size="large" />
+								<Input placeholder="Name" size="large" disabled={loading} />
 							</Form.Item>
 							<Form.Item
 								name="email"
@@ -78,7 +84,7 @@ export const Register = () => {
 								required
 								rules={[{ required: true, type: 'email', message: 'Please, provide your email!' }]}
 							>
-								<Input placeholder="Email" size="large" />
+								<Input placeholder="Email" size="large" disabled={loading} />
 							</Form.Item>
 							<Form.Item
 								name="password"
@@ -89,7 +95,7 @@ export const Register = () => {
 									{ required: true, min: 6, message: 'The password must have more than 6 characters' }
 								]}
 							>
-								<Input.Password placeholder="Senha" size="large" />
+								<Input.Password placeholder="Senha" size="large" disabled={loading} />
 							</Form.Item>
 							<Form.Item
 								name="passwordRepeated"
@@ -97,7 +103,7 @@ export const Register = () => {
 								required
 								rules={[{ required: true, message: 'Please, provide your password!' }]}
 							>
-								<Input.Password placeholder="Senha" size="large" />
+								<Input.Password placeholder="Senha" size="large" disabled={loading} />
 							</Form.Item>
 							<Form.Item>
 								<Button
@@ -105,6 +111,7 @@ export const Register = () => {
 									type="primary"
 									block
 									htmlType="submit"
+									loading={loading}
 								>REGISTER</Button>
 							</Form.Item>
 						</Form>

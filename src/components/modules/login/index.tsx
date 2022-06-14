@@ -6,6 +6,7 @@ import { Page } from '../../common/Page';
 import { Button, Col, Form, Input, Row, notification, Typography } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import Link from 'next/link';
+import { useState } from 'react';
 
 type FormFields = {
 	email: string;
@@ -14,6 +15,7 @@ type FormFields = {
 
 export const Login = () => {
 	const [loginForm] = useForm();
+	const [loading, setLoading] = useState(false);
 
 	const { saveUser } = useUser();
 
@@ -25,6 +27,7 @@ export const Login = () => {
 
 	const onFinishLogin = async ({ email, password }: FormFields) => {
 		try {
+			setLoading(true);
 			const { token, user } = await authenticate({ email, password });
 
 			saveUser(token, user);
@@ -32,6 +35,8 @@ export const Login = () => {
 		} catch (err) {
 			console.log(err)
 			openNotification('error', err.message || 'There was an error, try again later!');
+		} finally {
+			setLoading(false);
 		}
 	}
 
@@ -63,7 +68,7 @@ export const Login = () => {
 								required
 								rules={[{ required: true, type: 'email', message: 'Please, provide your email!' }]}
 							>
-								<Input placeholder="Email" size="large" />
+								<Input placeholder="Email" size="large" disabled={loading} />
 							</Form.Item>
 							<Form.Item
 								name="password"
@@ -71,7 +76,7 @@ export const Login = () => {
 								required
 								rules={[{ required: true, message: 'Please, provide your password!' }]}
 							>
-								<Input.Password placeholder="Senha" size="large" />
+								<Input.Password placeholder="Senha" size="large" disabled={loading} />
 							</Form.Item>
 							<Form.Item>
 								<Button
@@ -79,7 +84,7 @@ export const Login = () => {
 									type="primary"
 									block
 									htmlType="submit"
-									disabled={!loginForm.isFieldsTouched || !!loginForm.getFieldsError().filter(({ errors }) => errors.length).length}
+									loading={loading}
 								>ENTER</Button>
 							</Form.Item>
 						</Form>
