@@ -33,3 +33,51 @@ html, body, #__next {
   width: unset !important;
   height: unset !important;
 }
+
+.leaflet-user-marker {
+  width: unset !important;
+  height: unset !important;
+}
+
+.leaflet-user-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 6em;
+  border-radius: 0.1em;
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-user-picture-wrapper {
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1em solid #ffffff;
+  border-radius: 1em;
+  transition: all ease 1s;
+  width: 10em;
+  height: 10em;
+  position: absolute;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  -webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.25); 
+  box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.25);
+}
+
+.leaflet-user-circles {
+  z-index: 2;
+  transform: translate(-50%, 50%);
+  margin-top: 1em;
+  background-color: #B9B3FE;
+  position: absolute;
+  padding: 1.5em 2.5em;
+  border: 1.5em solid #C9CFFE;
+  outline: 1.5em solid rgba(185, 179, 254, 0.3);
+  border-radius: 50%;
+}
+
+.main-modal .ant-modal-content {
+  border-radius: 2em;
+}
