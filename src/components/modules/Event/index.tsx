@@ -1,14 +1,20 @@
-import { Col, Row, Button, Typography } from 'antd';
+import { Col, Row, Button, Typography, Radio } from 'antd';
 import dynamic from 'next/dynamic';
-import { ArrowLeftOutlined, ToolOutlined } from '@ant-design/icons';
+import { CompassOutlined, ShoppingOutlined, SmileOutlined, ArrowLeftOutlined, ToolOutlined, ShoppingFilled, CompassFilled, SmileFilled } from '@ant-design/icons';
+import { TbFocus2 } from 'react-icons/tb';
 
 import LocationProvider from '../../../contexts/location';
 import { Page } from '../../common/Page';
+import { useState } from 'react';
+import { MainEventMenu } from './components/MainMenu';
+
+const MapWithNoSSR = dynamic(() => import('../../common/LeafletContainer'), {
+	ssr: false
+});
 
 export const Event = () => {
-	const MapWithNoSSR = dynamic(() => import('../../common/LeafletContainer'), {
-		ssr: false
-	});
+	const [menu, setMenu] = useState<string>('');
+
 	return (
 		<Page title="Event">
 			<LocationProvider>
@@ -20,7 +26,9 @@ export const Event = () => {
 					mapCornerEnd={
 						{ lat: -23.695954697016138, lng: -46.69165849685668, alt: undefined }
 					}
-				></MapWithNoSSR>
+				>
+				</MapWithNoSSR>
+				<MainEventMenu menu={menu} setMenu={setMenu} />
 				<div id="ui-header" style={{
 					position: 'absolute',
 					zIndex: 2000,
@@ -39,9 +47,86 @@ export const Event = () => {
 							</Typography.Title>
 						</Col>
 						<Col span={4}>
-							<Button type="default	" shape="round" icon={<ToolOutlined />} size={'large'} />
+							<Button type="default" shape="round" icon={<ToolOutlined />} size={'large'} />
 						</Col>
 					</Row>
+				</div>
+				<div 
+					id="ui-footer" 
+					style={{
+						position: 'absolute',
+						zIndex: 2000,
+						width: '90%',
+						display: 'flex',
+						justifyContent: 'center',
+						bottom: '2.5rem',
+						left: '50%',
+						transform: 'translateX(-50%)'
+					}}
+				>
+					<Radio.Group 
+						size='large' 
+						defaultValue="a" 
+						buttonStyle="solid" 
+						value={menu}
+					>
+						<Radio.Button disabled value="shop" onChange={(e) => setMenu(e.target.value)}>
+							<div style={{ 
+								display: 'flex', 
+								justifyContent: 'center', 
+								alignItems: 'center', 
+								height: '100%',
+							}}
+							>
+								{menu === 'shop' ? (
+									<ShoppingFilled style={{ fontSize: '1.6em' }} />
+								) : (
+									<ShoppingOutlined style={{ fontSize: '1.3em' }} />
+								)}
+							</div>
+						</Radio.Button>
+						<Radio.Button 
+							value="nav" 
+							onChange={(e) => setMenu(e.target.value)}
+							onClick={() => {
+								if(menu === 'nav') setMenu('');
+							}}>
+							<div style={{ 
+								display: 'flex', 
+								justifyContent: 'center', 
+								alignItems: 'center', 
+								height: '100%',
+							}}
+							>
+								{menu === 'nav' ? (
+									<CompassFilled style={{ fontSize: '1.6em' }} />
+								) : (
+									<CompassOutlined style={{ fontSize: '1.3em' }} />
+								)}
+							</div>
+						</Radio.Button>
+						<Radio.Button
+							value="social"
+							onChange={(e) => setMenu(e.target.value)}
+							onClick={() => {
+								if(menu === 'social') setMenu('');
+							}}
+						>
+							<div style={{ 
+								display: 'flex', 
+								justifyContent: 'center', 
+								alignItems: 'center', 
+								height: '100%',
+							}}
+							>
+								{menu === 'social' ? (
+									<SmileFilled style={{ fontSize: '1.6em' }} />
+								) : (
+									<SmileOutlined style={{ fontSize: '1.3em' }} />
+								)}
+							</div>
+						</Radio.Button>
+					</Radio.Group>
 				</div>
 			</LocationProvider>
 		</Page >

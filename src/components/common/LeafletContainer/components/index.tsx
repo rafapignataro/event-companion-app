@@ -3,22 +3,29 @@ import { useLocation } from '../../../../contexts/location';
 import { Location, LocationCategory } from '../../../../services/locations/types';
 
 import { RiRainbowFill } from 'react-icons/ri';
+import { MdFace } from 'react-icons/md';
 import { GiHotDog } from 'react-icons/gi';
 import { BiStore } from 'react-icons/bi';
 import { GrStatusPlaceholderSmall } from 'react-icons/gr';
 import ActivationBadge from '../../ActivationBadge';
 
-type LocationMarkerIconProperties = {
+interface LocationMarkerIconProperties {
 	location: Location;
 	zoomLevel: number;
 	maxZoom: number;
 	selected: boolean;
 }
 
-type LocationAvatarProperties = {
+interface UserMarkerIconProperties {
+	zoomLevel: number;
+	maxZoom: number;
+}
+
+interface LocationAvatarProperties {
 	category: string
 	zoomLevel: number
 	maxZoom: number
+	fixedSize?: boolean
 }
 
 export const LocationCard = ({ children }: { children: React.ReactNode }) => {
@@ -38,27 +45,30 @@ export const LocationCard = ({ children }: { children: React.ReactNode }) => {
 	);
 };
 
-export const LocationAvatar = ({ category, zoomLevel, maxZoom }: LocationAvatarProperties) => {
-	const { locationCategoryList } = useLocation();
-	const [avatarProperties, setAvatarProperties] = useState<LocationCategory>({} as LocationCategory);
-
-	useEffect(() => {
-		setAvatarProperties(
-			locationCategoryList?.find(listCategory => listCategory.code === category) ||
-			{} as LocationCategory
-		);
-	}, [locationCategoryList]);
-
+export const LocationAvatar = ({ category, zoomLevel, maxZoom, fixedSize }: LocationAvatarProperties) => {
 	const iconSwitch = (categoryCode: string) => {
 		switch (categoryCode) {
-			case 'FOOD':
-				return <GiHotDog />;
-			case 'ATTRACTION':
-				return <RiRainbowFill />;
-			case 'SHOPPING':
-				return <BiStore />;
-			default:
-				return <GrStatusPlaceholderSmall />;
+		case 'FOOD':
+			return <GiHotDog />;
+		case 'ATTRACTION':
+			return <RiRainbowFill />;
+		case 'SHOPPING':
+			return <BiStore />;
+		default:
+			return <GrStatusPlaceholderSmall />;
+		}
+	};
+
+	const colorSwitch = (categoryCode: string) => {
+		switch (categoryCode) {
+		case 'FOOD':
+			return '#59FF7D';
+		case 'ATTRACTION':
+			return '#FFE459';
+		case 'SHOPPING':
+			return '#FF9E59';
+		default:
+			return '#C7C7C7';
 		}
 	};
 
@@ -69,8 +79,8 @@ export const LocationAvatar = ({ category, zoomLevel, maxZoom }: LocationAvatarP
 				boxShadow: '0 1px 3px 0 rgba(0,0,0,0.25)',
 				border: '.25em solid #ffffff',
 				padding: '.25em',
-				background: avatarProperties.color || '#C7C7C7',
-				fontSize: 30 - ((maxZoom - zoomLevel) * 5),
+				background: colorSwitch(category) || '#C7C7C7',
+				fontSize: !fixedSize ? 30 - ((maxZoom - zoomLevel) * 5) : '1em',
 				display: 'flex',
 				alignItems: 'center',
 				justifyContent: 'center',
@@ -126,6 +136,18 @@ export const Icon = ({ location, zoomLevel, maxZoom }: LocationMarkerIconPropert
 					zIndex: -2,
 				}} />
 			)}
+		</>
+	);
+};
+export const UserIcon = ({ zoomLevel, maxZoom }: UserMarkerIconProperties) => {
+	return (
+		<>
+			<div className='leaflet-user-picture-wrapper' style={{ fontSize: `${0.6 - ((maxZoom - zoomLevel) * 0.2)}em` }}>
+				<div className='leaflet-user-picture'>
+					<MdFace />
+				</div>
+			</div>
+			<div className='leaflet-user-circles' style={{ fontSize: `${0.7 - ((maxZoom - zoomLevel) * 0.2)}em` }}/>
 		</>
 	);
 };

@@ -1,8 +1,8 @@
 export const locationCategories = [
-	{ code: 'ATTRACTION', name: 'Attraction' },
-	{ code: 'FOOD', name: 'Food' },
-	{ code: 'SHOPPING', name: 'Shopping' },
-	{ code: 'UTILITIES', name: 'Utilities' },
-	{ code: 'ATTENDANCE', name: 'Attendance' },
-	{ code: 'DRINKS', name: 'Drinks' },
+	{ code: 'ATTRACTION', name: 'Attraction', color: '#FFE459'},
+	{ code: 'FOOD', name: 'Food', color: '#FFE459' },
+	{ code: 'SHOPPING', name: 'Shopping', color: '#FFE459' },
+	{ code: 'UTILITIES', name: 'Utilities', color: '#FFE459' },
+	{ code: 'ATTENDANCE', name: 'Attendance', color: '#FFE459' },
+	{ code: 'DRINKS', name: 'Drinks', color: '#FFE459' },
 ];

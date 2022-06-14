@@ -1,15 +1,15 @@
-import { Card, Spin } from 'antd';
+import { Button, Spin } from 'antd';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { MapContainer, TileLayer, useMap, useMapEvents, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { Marker } from 'react-leaflet';
 import L, { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
-import Title from 'antd/lib/typography/Title';
 import { useLocation } from '../../../contexts/location';
 import { Location } from '../../../services/locations/types';
 import { LoadingScreen } from '../LoadingScreen';
 import 'leaflet/dist/leaflet.css';
-import { Icon } from './components';
+import { Icon, UserIcon } from './components';
+import { TbFocus2 } from 'react-icons/tb';
 
 type AnimatedPanning = {
 	animateRef: MutableRefObject<boolean>;
@@ -48,17 +48,81 @@ const SetViewOnClick = ({ animateRef, setLocation }: AnimatedPanning) => {
 };
 
 const UserLocation = ({ showUserLocation }: UserLocationProperties) => {
-	const [position, setPosition] = useState<LatLng | null>(null);
+	const leafletInstance = L;
 	const mapInstance = useMap();
+	const [position, setPosition] = useState<LatLng | null>(null);
+	const [zoomLevel, setZoomLevel] = useState(18);
+	const [maxZoom, setMaxZoom] = useState(19);
+
+	const map = useMapEvents({
+		load: () => {
+			setZoomLevel(map.getZoom());
+			setMaxZoom(map.getMaxZoom());
+		},
+		zoom: () => {
+			setZoomLevel(map.getZoom());
+		},
+	});
+
+	const iconAnchor = document.createElement('div');
+
+	ReactDOM.hydrate(<UserIcon zoomLevel={zoomLevel} maxZoom={maxZoom} />, iconAnchor);
+
+	const icon = leafletInstance.divIcon({
+		html: iconAnchor,
+		className: 'leaflet-user-marker',
+	});
+
+	const centerView = (latLng: LatLng) => {
+		mapInstance.flyTo(latLng, mapInstance.getMaxZoom());
+	};
+
 	useEffect(() => {
 		if (!showUserLocation) return;
-		mapInstance.locate().on('locationfound', (e) => {
+
+		mapInstance.locate({
+			setView: true,
+			watch: true,
+		}).on('locationfound', (e) => {
 			setPosition(e.latlng);
-			mapInstance.flyTo(e.latlng, mapInstance.getZoom());
+			// mapInstance.flyTo(e.latlng, mapInstance.getZoom());
 		});
+
+		return () => {
+			mapInstance.stopLocate();
+		};
 	}, [mapInstance]);
+
 	return position === null ? null : (
-		<Marker position={position} />
+		<>
+			<div 
+				style={{
+					position: 'absolute',
+					zIndex: 2000,
+					display: 'flex',
+					justifyContent: 'center',
+					bottom: '10.5rem',
+					right: '0',
+					transform: 'translateX(-50%)'
+				}}
+			>
+				<Button
+					onClick={() => centerView(position)}
+					icon={<TbFocus2 size={'1.5em'} />}
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						width: '2.5em',
+						height: '2.5em',
+					}}
+				/>
+			</div>
+			<Marker 
+				position={position}
+				icon={icon}
+			/>
+		</>
 	);
 };
 
@@ -127,13 +191,13 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 						zoom={18}
 						minZoom={17}
 						maxZoom={19}
+						zoomControl={false}
 						style={{ height: '100%' }}
 						maxBoundsViscosity={1.0}
 						maxBounds={mapBounds}
 						layers={[
 							L.tileLayer('')
 						]}
-						zoomControl={false}
 					>
 						<TileLayer
 							maxZoom={19}
@@ -145,6 +209,7 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 						/>
 						<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
 						<UserLocation showUserLocation={showUserLocation} />
+						{/* <CenterOnUser animateRef={animateRef} /> */}
 						{!loading ? (
 							locationList.map(location => (
 								<LocationMarker
@@ -156,7 +221,7 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 								/>
 							))
 						) : <LoadingScreen />}
-						<ZoomControl position='bottomleft' />
+						{/* <ZoomControl position='bottomleft' /> */}
 					</MapContainer>
 				</div>
 			) : (
