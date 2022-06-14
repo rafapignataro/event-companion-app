@@ -15,14 +15,18 @@ api.interceptors.request.use(config => {
 	const cookies = parseCookies();
 
 	const token = cookies['companion_token'];
-  
-	if(config.headers) config.headers.Authorization = `Bearer ${token}`;
-   
+
+	if (config.headers) config.headers.Authorization = `Bearer ${token}`;
+
 	return config;
 });
 
 api.interceptors.response.use(response => response, error => {
-	if (error.response.status === 401) Router.push('/login');
+	if (error.response.status === 401) {
+		if (Router.route !== '/login' && Router.route !== '/register') {
+			Router.push('/login');
+		}
+	}
 
 	return Promise.reject(error.response.data);
 });
@@ -34,6 +38,6 @@ const unauthApi = axios.create({
 	},
 });
 
-unauthApi.interceptors.response.use(response => response, error =>  Promise.reject(error.response.data));
+unauthApi.interceptors.response.use(response => response, error => Promise.reject(error.response.data));
 
 export { api, unauthApi };
