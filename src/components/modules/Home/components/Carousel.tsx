@@ -42,26 +42,22 @@ export const Carousel = ({ eventList, changePage, selectEvent }: CarouselProps) 
 					position: 'absolute',
 					width: '100%',
 					height: '100%',
-					top: '0',
-					left: '0',
 					display: 'flex',
 					justifyContent: 'center',
 					alignItems: 'center'
 				}}
 			>
-				<AntdCarousel>
-					{eventList.map((event) => {
-						return (
-							<div key={event.id}>
-								<Button onClick={() => {
-									selectEvent(event.id);
-									changePage('event');
-								}}
-								>{event.name}</Button>
-							</div>
-						);
-					})}
-				</AntdCarousel>
+				{eventList.map((event) => {
+					return (
+						<div key={event.id}>
+							<Button onClick={() => {
+								selectEvent(event.id);
+								changePage('event');
+							}}
+							>{event.name}</Button>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);
