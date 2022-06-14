@@ -6,19 +6,22 @@ import { LoadingScreen } from '../components/common/LoadingScreen';
 import Router from 'next/router';
 
 type UserProviderProps = {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }
 
 type User = {
-  id: number;
-  name: string;
-  email: string;
+	id: number;
+	name: string;
+	email: string;
+	role: string;
+	customerId: number;
+	avatarColor: number;
 }
 
 type UserContextProps = {
-  user: User;
-  loading: boolean;
-  saveUser: (token: string, user: User) => void;
+	user: User;
+	loading: boolean;
+	saveUser: (token: string, user: User) => void;
 	logoutUser: () => void;
 }
 
@@ -35,14 +38,17 @@ export default function UserProvider({ children }: UserProviderProps) {
 
 				const cookies = parseCookies();
 				const token = cookies['companion_token'];
-				
+
 				const user = decode(token, { json: true });
-		
-				if(user) {
+
+				if (user) {
 					setUser({
 						id: user.id,
 						name: user.name,
 						email: user.email,
+						role: user.role,
+						customerId: user.customerId,
+						avatarColor: user.avatarColor
 					});
 				}
 			} catch (err) {
@@ -55,7 +61,7 @@ export default function UserProvider({ children }: UserProviderProps) {
 
 	const saveUser = (token: string, user: User) => {
 		setUser(user);
-  
+
 		setCookie(undefined, 'companion_token', token, {
 			maxAge: 60 * 60,
 		});
@@ -65,13 +71,13 @@ export default function UserProvider({ children }: UserProviderProps) {
 
 	const logoutUser = () => {
 		setUser({} as User);
-		
+
 		destroyCookie(undefined, 'companion_token');
 
 		Router.push('/login');
 	};
 
-	if(loading) return <LoadingScreen />;
+	if (loading) return <LoadingScreen />;
 
 	return (
 		<UserContext.Provider value={{ user, loading, saveUser, logoutUser }}>
