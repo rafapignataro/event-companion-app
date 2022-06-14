@@ -5,8 +5,8 @@ type Color = ShortColor | LongColor;
 
 export type Customer = {
 	id: number;
-	name: number;
+	name: string;
 	email: string;
-	password: Date;
+	password: string;
 	avatarColor?: Color
 }
