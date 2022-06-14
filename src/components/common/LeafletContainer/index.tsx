@@ -1,4 +1,4 @@
-import { Button, Spin } from 'antd';
+import { Button, notification, Spin } from 'antd';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
@@ -17,6 +17,18 @@ type AnimatedPanning = {
 }
 type UserLocationProperties = {
 	showUserLocation?: boolean;
+	bounds: {
+		boundStart: {
+			lat: number;
+			lng: number;
+			alt?: number;
+		}, 
+		boundEnd: {
+			lat: number;
+			lng: number;
+			alt?: number;
+		}
+	};
 }
 type LocationMarkerProperties = {
 	latLong: [number, number];
@@ -47,10 +59,12 @@ const SetViewOnClick = ({ animateRef, setLocation }: AnimatedPanning) => {
 	return null;
 };
 
-const UserLocation = ({ showUserLocation }: UserLocationProperties) => {
+const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 	const leafletInstance = L;
 	const mapInstance = useMap();
 	const [position, setPosition] = useState<LatLng | null>(null);
+	const [onPremises, setOnPremises] = useState(false);
+	const [locationWarning, setLocationWarning] = useState(false);
 	const [zoomLevel, setZoomLevel] = useState(18);
 	const [maxZoom, setMaxZoom] = useState(19);
 
@@ -79,21 +93,42 @@ const UserLocation = ({ showUserLocation }: UserLocationProperties) => {
 
 	useEffect(() => {
 		if (!showUserLocation) return;
-
+		mapInstance.stopLocate();
 		mapInstance.locate({
-			setView: true,
+			setView: onPremises,
 			watch: true,
-		}).on('locationfound', (e) => {
-			setPosition(e.latlng);
+		}).on('locationfound', (foundLocation) => {
+			setPosition(foundLocation.latlng);
 			// mapInstance.flyTo(e.latlng, mapInstance.getZoom());
 		});
 
 		return () => {
 			mapInstance.stopLocate();
 		};
-	}, [mapInstance]);
+	}, [onPremises]);
 
-	return position === null ? null : (
+	useEffect(() => {
+		if (!position) return;
+		
+		if(
+			position.lat < bounds.boundStart.lat ||
+			position.lat > bounds.boundEnd.lat ||
+			position.lng < bounds.boundStart.lng ||
+			position.lng > bounds.boundEnd.lng
+		) {
+			if(!locationWarning) {
+				notification.warning({
+					message: 'Get over here!',
+					description: 'You are too far from the venue!'
+				});
+				setLocationWarning(true);
+			}
+			return setOnPremises(false);
+		}
+		if (!onPremises) return setOnPremises(true);
+	}, [position]);
+
+	return (position === null || !onPremises) ? null : (
 		<>
 			<div 
 				style={{
@@ -208,7 +243,10 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 
 						/>
 						<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
-						<UserLocation showUserLocation={showUserLocation} />
+						<UserLocation showUserLocation={showUserLocation} bounds={{
+							boundStart: mapCornerStart,
+							boundEnd: mapCornerEnd
+						}} />
 						{/* <CenterOnUser animateRef={animateRef} /> */}
 						{!loading ? (
 							locationList.map(location => (
