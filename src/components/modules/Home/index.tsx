@@ -3,6 +3,7 @@ import { Button, Col, Radio, Row, Typography } from 'antd';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Event } from '../../../services/events/types';
 import { Page } from '../../common/Page';
+import { Carousel } from './components/Carousel';
 import { MainHomeMenu } from './components/MainMenu';
 
 interface HomeProps {
@@ -26,16 +27,8 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 
 	return (
 		<Page title="Home">
-			{eventList.map((event) => {
-				return (
-					<Button key={event.id} onClick={() => {
-						selectEvent(event.id);
-						changePage('event');
-					}}
-					>{event.name}</Button>
-				);
-			})}
 			<MainHomeMenu menu={menu} setMenu={setMenu} filterEvents={filterEvents} filteredEventList={filteredEventList} />
+			<Carousel eventList={eventList} changePage={changePage} selectEvent={selectEvent} />
 			<div id="ui-header" style={{
 				position: 'absolute',
 				zIndex: 2000,
