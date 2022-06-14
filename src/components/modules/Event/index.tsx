@@ -5,19 +5,38 @@ import { TbFocus2 } from 'react-icons/tb';
 
 import LocationProvider from '../../../contexts/location';
 import { Page } from '../../common/Page';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { MainEventMenu } from './components/MainMenu';
+import { createVisitor } from '../../../services/visitors/createVisitor';
+import { useUser } from '../../../contexts/user';
+
+interface EventProps {
+	eventId: number;
+	changePage: Dispatch<SetStateAction<string>>;
+	selectEvent: Dispatch<SetStateAction<number | null>>;
+}
 
 const MapWithNoSSR = dynamic(() => import('../../common/LeafletContainer'), {
 	ssr: false
 });
 
-export const Event = () => {
+export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
+	const { user } = useUser();
 	const [menu, setMenu] = useState<string>('');
+
+	useEffect(() => {
+		(async () => {
+			await createVisitor({
+				eventId,
+				customerId: user.id
+				// **Alterar para id do user da tabela customer
+			});
+		})();
+	}, []);
 
 	return (
 		<Page title="Event">
-			<LocationProvider>
+			<LocationProvider eventId={eventId}>
 				<MapWithNoSSR
 					showUserLocation={true}
 					mapCornerStart={
@@ -39,7 +58,16 @@ export const Event = () => {
 				}}>
 					<Row justify="space-between" align="middle" style={{ width: '100%' }} >
 						<Col span={4}>
-							<Button type="default" shape="round" icon={<ArrowLeftOutlined />} size={'large'} />
+							<Button 
+								type="default"
+								shape="round"
+								icon={<ArrowLeftOutlined />}
+								size={'large'}
+								onClick={() => {
+									changePage('home');
+									selectEvent(null);
+								}}
+							/>
 						</Col>
 						<Col span={16}>
 							<Typography.Title level={3} style={{ textAlign: 'center', margin: 0 }}>

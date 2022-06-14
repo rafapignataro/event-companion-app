@@ -5,9 +5,10 @@ import { useLocation } from '../../../../contexts/location';
 import { LocationAvatar } from '../../../common/LeafletContainer/components';
 import { BsCircleFill } from 'react-icons/bs';
 import Search from 'antd/lib/input/Search';
+import { Counter } from './components/Counter';
 
 const Explore = () => {
-	const { selectedLocation, selectLocation, activationCountdown, filteredLocationList, filterLocations } = useLocation();
+	const { selectedLocation, selectLocation, filteredLocationList, filterLocations, locationList } = useLocation();
 
 	if(selectedLocation) return (
 		<>
@@ -15,10 +16,17 @@ const Explore = () => {
 				<Title style={{ fontFamily: 'Gilroy-Extrabold', margin: 0 }}>{selectedLocation.name}</Title>
 				<Title level={4} style={{ fontWeight: 400, margin: '0 0 1em 0' }}>{selectedLocation.locationCategory.name}</Title>
 			</div>
-			{selectedLocation.activations?.find((activation) => activation.active) && (
-				<div>
-					<Text>{activationCountdown(selectedLocation.activations?.find((activation) => activation.active)?.endDate || new Date())}</Text>
-					<Text>{selectedLocation.activations?.find((activation) => activation.active)?.description}</Text>
+			{locationList.find((location) => location.id === selectedLocation.id)?.activations?.find((activation) => activation.active) && (
+				<div style={{ margin: '1em 0', display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
+					<Counter endDate={selectedLocation.activations?.find((activation) => activation.active)?.endDate || new Date()} />
+					<div style={{
+						border: '4px solid #F50359',
+						borderRadius: '0 8px 8px 8px',
+						padding: '1em .75em 1.2em .75em',
+						width: '100%'
+					}}>
+						<Text style={{ fontSize: '1.2em' }}>{selectedLocation.activations?.find((activation) => activation.active)?.description}</Text>
+					</div>
 				</div>
 			)}
 			<div style={{ lineHeight: '20px' }}>
@@ -55,11 +63,11 @@ const Explore = () => {
 											<Badge count={<BsCircleFill />} style={{ 
 												color: '#f5222d',
 												borderRadius: '50%',
-												right: '.75em',
-												top: '.75em',
-												border: '.3em solid #fff',
-												width: '1.8em',
-												height:'1.8em',
+												right: '.4em',
+												top: '.4em',
+												border: '.2em solid #fff',
+												width: '1.3em',
+												height:'1.3em',
 											}}>
 												<LocationAvatar category={location.locationCategory.code} zoomLevel={0} maxZoom={0} fixedSize={true} />
 											</Badge>
