@@ -1,21 +1,21 @@
 import Image from 'next/image';
+import Router from 'next/router';
+import { useForm } from 'antd/lib/form/Form';
 
-import { authenticate } from '../../../services/authentication/authenticate';
-import { useUser } from '../../../contexts/user';
+import Link from 'next/link';
 import { Page } from '../../common/Page';
 import { Button, Col, Form, Input, Row, notification, Typography } from 'antd';
-import { useForm } from 'antd/lib/form/Form';
-import Link from 'next/link';
+import { createCustomer } from '../../../services/customers/createCustomer';
 
 type FormFields = {
+	name: string;
 	email: string;
 	password: string;
+	passwordRepeated: string;
 }
 
-export const Login = () => {
-	const [loginForm] = useForm();
-
-	const { saveUser } = useUser();
+export const Register = () => {
+	const [registerForm] = useForm();
 
 	const openNotification = (type: string, message: string, err?: string) => {
 		if (type == 'success' || type == 'error')
@@ -23,12 +23,19 @@ export const Login = () => {
 		return;
 	};
 
-	const onFinishLogin = async ({ email, password }: FormFields) => {
+	const onFinishRegister = async ({ name, email, password, passwordRepeated }: FormFields) => {
 		try {
-			const { token, user } = await authenticate({ email, password });
+			if (password !== passwordRepeated) return registerForm.setFields([
+				{
+					name: 'passwordRepeated',
+					errors: ['The passwords provided must be the same.']
+				}
+			]);
 
-			saveUser(token, user);
-			openNotification('success', 'Welcome back!');
+			await createCustomer({ name, email, password, passwordRepeated });
+
+			openNotification('success', 'Successfully registered!');
+			Router.push('/login');
 		} catch (err) {
 			console.log(err)
 			openNotification('error', err.message || 'There was an error, try again later!');
@@ -36,7 +43,7 @@ export const Login = () => {
 	}
 
 	return (
-		<Page title="Login">
+		<Page title="Register">
 			<div style={{
 				height: '100vh',
 				width: '100%',
@@ -52,11 +59,19 @@ export const Login = () => {
 					</Col>
 					<Col span={24}>
 						<Form
-							name="loginForm"
+							name="registerForm"
 							layout="vertical"
-							onFinish={onFinishLogin}
-							form={loginForm}
+							onFinish={onFinishRegister}
+							form={registerForm}
 						>
+							<Form.Item
+								name="name"
+								label="Name"
+								required
+								rules={[{ required: true, message: 'Please, provide your name!' }]}
+							>
+								<Input placeholder="Name" size="large" />
+							</Form.Item>
 							<Form.Item
 								name="email"
 								label="E-mail"
@@ -69,6 +84,17 @@ export const Login = () => {
 								name="password"
 								label="Password"
 								required
+								rules={[
+									{ required: true, message: 'Please, provide your password!' },
+									{ required: true, min: 6, message: 'The password must have more than 6 characters' }
+								]}
+							>
+								<Input.Password placeholder="Senha" size="large" />
+							</Form.Item>
+							<Form.Item
+								name="passwordRepeated"
+								label="Repeat Password"
+								required
 								rules={[{ required: true, message: 'Please, provide your password!' }]}
 							>
 								<Input.Password placeholder="Senha" size="large" />
@@ -79,15 +105,14 @@ export const Login = () => {
 									type="primary"
 									block
 									htmlType="submit"
-									disabled={!loginForm.isFieldsTouched || !!loginForm.getFieldsError().filter(({ errors }) => errors.length).length}
-								>ENTER</Button>
+								>REGISTER</Button>
 							</Form.Item>
 						</Form>
 					</Col>
 					<Col span={24}>
 						<Row justify="center">
-							<Link href="/register">
-								<Typography.Link color="black">Not a member yet?</Typography.Link>
+							<Link href="/login">
+								<Typography.Link color="black">Already have an account?</Typography.Link>
 							</Link>
 						</Row>
 					</Col>
