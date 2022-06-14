@@ -28,8 +28,7 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 		(async () => {
 			await createVisitor({
 				eventId,
-				customerId: user.id
-				// **Alterar para id do user da tabela customer
+				customerId: user.customerId
 			});
 		})();
 	}, []);
@@ -58,7 +57,7 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 				}}>
 					<Row justify="space-between" align="middle" style={{ width: '100%' }} >
 						<Col span={4}>
-							<Button 
+							<Button
 								type="default"
 								shape="round"
 								icon={<ArrowLeftOutlined />}
@@ -79,8 +78,8 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 						</Col>
 					</Row>
 				</div>
-				<div 
-					id="ui-footer" 
+				<div
+					id="ui-footer"
 					style={{
 						position: 'absolute',
 						zIndex: 2000,
@@ -92,17 +91,17 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 						transform: 'translateX(-50%)'
 					}}
 				>
-					<Radio.Group 
-						size='large' 
-						defaultValue="a" 
-						buttonStyle="solid" 
+					<Radio.Group
+						size='large'
+						defaultValue="a"
+						buttonStyle="solid"
 						value={menu}
 					>
 						<Radio.Button disabled value="shop" onChange={(e) => setMenu(e.target.value)}>
-							<div style={{ 
-								display: 'flex', 
-								justifyContent: 'center', 
-								alignItems: 'center', 
+							<div style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
 								height: '100%',
 							}}
 							>
@@ -113,16 +112,16 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 								)}
 							</div>
 						</Radio.Button>
-						<Radio.Button 
-							value="nav" 
+						<Radio.Button
+							value="nav"
 							onChange={(e) => setMenu(e.target.value)}
 							onClick={() => {
-								if(menu === 'nav') setMenu('');
+								if (menu === 'nav') setMenu('');
 							}}>
-							<div style={{ 
-								display: 'flex', 
-								justifyContent: 'center', 
-								alignItems: 'center', 
+							<div style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
 								height: '100%',
 							}}
 							>
@@ -137,13 +136,13 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 							value="social"
 							onChange={(e) => setMenu(e.target.value)}
 							onClick={() => {
-								if(menu === 'social') setMenu('');
+								if (menu === 'social') setMenu('');
 							}}
 						>
-							<div style={{ 
-								display: 'flex', 
-								justifyContent: 'center', 
-								alignItems: 'center', 
+							<div style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
 								height: '100%',
 							}}
 							>
