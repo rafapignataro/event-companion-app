@@ -4,6 +4,7 @@ import { findAllLocations } from '../services/locations/findAllLocations';
 import moment from 'moment';
 
 interface LocationProviderProps {
+	eventId: number,
   children: React.ReactNode;
 }
 
@@ -15,19 +16,18 @@ interface LocationContextProps {
   loading: boolean;
   selectLocation: (location: Location | null) => void
 	refreshLocations: () => Promise<void>
-	activationCountdown: (endDate: Date) => string
 }
 
 const LocationContext = createContext({} as LocationContextProps);
 
-export default function LocationProvider({ children }: LocationProviderProps) {
+export default function LocationProvider({ eventId, children }: LocationProviderProps) {
 	const [locationList, setLocationList] = useState<Location[]>([]);
 	const [filteredLocationList, filterLocationList] = useState<Location[]>([]);
 	const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const refreshLocations = async () => {
-		const tempLocations = await findAllLocations({ eventId: 1 })
+		const tempLocations = await findAllLocations({ eventId })
 			.then((locationList) => locationList.map((location) => {
 				return {
 					...location,
@@ -45,11 +45,9 @@ export default function LocationProvider({ children }: LocationProviderProps) {
 	};
 
 	const filterLocations = (filter: string, filterByCategory?: boolean) => {
-		console.log('zap1', filter);
 		const newLocationList = filterByCategory ? locationList.filter((location) => {
 			return location.locationCategory.code === filter;
 		}) : locationList.filter((location) => {
-			console.log('zap2', location);
 			return location.name.toLowerCase().includes(filter.toLowerCase()) || location.locationCategory.name.toLowerCase().includes(filter.toLowerCase());
 		});
 		filterLocationList(newLocationList);
@@ -59,32 +57,8 @@ export default function LocationProvider({ children }: LocationProviderProps) {
 		setSelectedLocation(receivedLocation);
 	};
 
-	const activationCountdown = (endDate: Date) => {
-		const time = moment(endDate).valueOf();
-		const interval = 1000;
-		let duration = moment.duration(time * 1000, 'milliseconds');
-		let remaining = '';
-
-		const activationCountdownInterval = setInterval(() => {
-			if(time <= moment().valueOf()) {
-				clearInterval(activationCountdownInterval);
-				duration = moment.duration(0, 'milliseconds');
-				remaining = moment(duration.asMilliseconds()).format('h:mm:ss');
-				return;
-			}
-			duration = moment.duration(duration.asMilliseconds() - interval, 'milliseconds');
-			remaining = moment(duration.asMilliseconds()).format('h:mm:ss');
-		}, interval);
-		
-		return remaining;
-	};
-
 	useEffect(() => {
-		console.log('zap', selectedLocation);
-	}, [selectedLocation]);
-
-	useEffect(() => {
-		const timer = setInterval(() => {
+		const heartBeat = setInterval(() => {
 			setLocationList(current => current.map((location) => {
 				return {
 					...location,
@@ -97,8 +71,9 @@ export default function LocationProvider({ children }: LocationProviderProps) {
 					})
 				};
 			}));
-		}, 1000 * 5); // 60s
-		return () => clearInterval(timer);
+		// Armazenar em localstorage a localização para enviar no final do evento
+		}, 1000 * 60); // 60s
+		return () => clearInterval(heartBeat);
 	}, []);
 
 	useEffect(() => {
@@ -123,7 +98,6 @@ export default function LocationProvider({ children }: LocationProviderProps) {
 				selectedLocation, 
 				selectLocation, 
 				loading,
-				activationCountdown
 			}}>
 			{children}
 		</LocationContext.Provider>
