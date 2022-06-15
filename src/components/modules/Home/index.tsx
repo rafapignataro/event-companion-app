@@ -30,7 +30,7 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 			<Carousel eventList={eventList} changePage={changePage} selectEvent={selectEvent} />
 			<div id="ui-header" style={{
 				position: 'absolute',
-				zIndex: 2000,
+				zIndex: 1009,
 				width: '90%',
 				top: '1.5rem',
 				left: '50%',
@@ -41,7 +41,7 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 					</Col>
 					<Col span={16}>
 						<Typography.Title level={3} style={{ textAlign: 'center', margin: 0 }}>
-								EVENTOS
+							EVENTOS
 						</Typography.Title>
 					</Col>
 					<Col span={4}>
@@ -49,11 +49,11 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 					</Col>
 				</Row>
 			</div>
-			<div 
-				id="ui-footer" 
+			<div
+				id="ui-footer"
 				style={{
 					position: 'absolute',
-					zIndex: 2000,
+					zIndex: 1009,
 					width: '90%',
 					display: 'flex',
 					justifyContent: 'center',
@@ -62,17 +62,17 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 					transform: 'translateX(-50%)'
 				}}
 			>
-				<Radio.Group 
-					size='large' 
-					defaultValue="a" 
-					buttonStyle="solid" 
+				<Radio.Group
+					size='large'
+					defaultValue="a"
+					buttonStyle="solid"
 					value={menu}
 				>
 					<Radio.Button disabled value="shop" onChange={(e) => setMenu(e.target.value)}>
-						<div style={{ 
-							display: 'flex', 
-							justifyContent: 'center', 
-							alignItems: 'center', 
+						<div style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
 							height: '100%',
 						}}
 						>
@@ -83,16 +83,16 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 							)}
 						</div>
 					</Radio.Button>
-					<Radio.Button 
-						value="nav" 
+					<Radio.Button
+						value="nav"
 						onChange={(e) => setMenu(e.target.value)}
 						onClick={() => {
-							if(menu === 'nav') setMenu('');
+							if (menu === 'nav') setMenu('');
 						}}>
-						<div style={{ 
-							display: 'flex', 
-							justifyContent: 'center', 
-							alignItems: 'center', 
+						<div style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
 							height: '100%',
 						}}
 						>
@@ -107,13 +107,13 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 						value="social"
 						onChange={(e) => setMenu(e.target.value)}
 						onClick={() => {
-							if(menu === 'social') setMenu('');
+							if (menu === 'social') setMenu('');
 						}}
 					>
-						<div style={{ 
-							display: 'flex', 
-							justifyContent: 'center', 
-							alignItems: 'center', 
+						<div style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
 							height: '100%',
 						}}
 						>
