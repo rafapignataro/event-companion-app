@@ -108,13 +108,6 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 							</div>
 						);
 					})}
-					{eventList.map((event) => {
-						return (
-							<div key={event.name} className="embla__slide">
-								<img style={{ height: '100%', padding: '4em' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
-							</div>
-						);
-					})}
 				</div>
 			</div>
 			
@@ -133,35 +126,6 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 						height: '100%'
 					}}
 				>
-					{eventList.map((event) => {
-						return (
-							<div key={event.name} className="embla__slide__2">
-								<div style={{ display: 'flex', alignItems: 'center' }}>
-									<div style={{ 
-										fontSize: '2.25em', 
-										width: '2.25em', 
-										height: '2.25em', 
-										overflow: 'hidden', 
-										padding: '0.25em', 
-										borderRadius: '50%',
-										border: '0.2em solid #ffffff',
-										boxSizing: 'border-box',
-										boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.25)',
-										display: 'flex',
-										backgroundColor: colorSwitch(event.eventCategoryId),
-										cursor: 'pointer'
-									}}
-									onClick={() => {
-										selectEvent(event.id);
-										changePage('event');
-									}}
-									>
-										<img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
-									</div>
-								</div>
-							</div>
-						);
-					})}
 					{eventList.map((event) => {
 						return (
 							<div key={event.name} className="embla__slide__2">
