@@ -7,10 +7,12 @@ interface MainMenuProps {
 	menu: string,
 	setMenu: Dispatch<SetStateAction<string>>,
 	filterEvents: (filter: string) => void,
-	filteredEventList: Event[]
+	filteredEventList: Event[],
+	selectEvent: Dispatch<SetStateAction<number | null>>
+	changePage: Dispatch<SetStateAction<string>>
 }
 
-export const MainHomeMenu = ({menu, setMenu, filterEvents, filteredEventList}: MainMenuProps) => {
+export const MainHomeMenu = ({menu, setMenu, filterEvents, filteredEventList, selectEvent, changePage}: MainMenuProps) => {
 	return (
 		<Modal 
 			centered 
@@ -25,7 +27,7 @@ export const MainHomeMenu = ({menu, setMenu, filterEvents, filteredEventList}: M
 			className="main-modal"
 		>
 			{menu === 'nav' ? (
-				<Events filterEvents={filterEvents} filteredEventList={filteredEventList} />
+				<Events filterEvents={filterEvents} filteredEventList={filteredEventList} selectEvent={selectEvent} changePage={changePage}  />
 			) : menu === 'social' ? (
 				<>zap 2</>
 			) : <>zap 3</>}

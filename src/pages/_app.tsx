@@ -1,6 +1,7 @@
 import 'antd/dist/antd.css';
 
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import UserProvider from '../contexts/user';
 
 import '../styles/global.css';

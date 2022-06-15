@@ -4,13 +4,16 @@ import Text from 'antd/lib/typography/Text';
 import Search from 'antd/lib/input/Search';
 import { Event } from '../../../../services/events/types';
 import { colorSwitch, nameSwitch } from '../../../../utils/functions/switches';
+import { Dispatch, SetStateAction } from 'react';
 
 interface EventsMenuProps {
-	filterEvents: (filter: string) => void,
+	filterEvents: (filter: string) => void
 	filteredEventList: Event[]
+	selectEvent: Dispatch<SetStateAction<number | null>>
+	changePage: Dispatch<SetStateAction<string>>
 }
 
-const EventsMenu = ({ filterEvents, filteredEventList }: EventsMenuProps) => {
+const EventsMenu = ({ filterEvents, filteredEventList, selectEvent, changePage }: EventsMenuProps) => {
 	return (
 		<>
 			<Search 
@@ -26,9 +29,10 @@ const EventsMenu = ({ filterEvents, filteredEventList }: EventsMenuProps) => {
 					return (
 						<Menu.Item 
 							key={event.id} 
-							// onClick={() => {
-							// 	selectLocation(location);
-							// }}
+							onClick={() => {
+								selectEvent(event.id);
+								changePage('event');
+							}}
 							style={{ height: '6em' }}
 						>
 							<div style={{ display: 'flex', alignItems: 'center', paddingLeft: '2px' }}>
