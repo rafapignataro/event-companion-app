@@ -2,6 +2,7 @@ import { CompassFilled, CompassOutlined, ShoppingFilled, ShoppingOutlined, Smile
 import { Button, Col, Radio, Row, Typography } from 'antd';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Event } from '../../../services/events/types';
+import { nameSwitch } from '../../../utils/functions/switches';
 import { Page } from '../../common/Page';
 import { Carousel } from './components/Carousel';
 import { MainHomeMenu } from './components/MainMenu';
@@ -16,11 +17,9 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 	const [menu, setMenu] = useState('');
 	const [filteredEventList, filterEventList] = useState<Event[]>(eventList);
 
-	const filterEvents = (filter: string | number, filterByCategory?: boolean) => {
-		const newEventList = filterByCategory ? eventList.filter((event) => {
-			return event.eventCategoryId === filter;
-		}) : eventList.filter((event) => {
-			return event.name.toLowerCase().includes(String(filter).toLowerCase()) || String(event.eventCategoryId).toLowerCase().includes(String(filter).toLowerCase());
+	const filterEvents = (filter: string) => {
+		const newEventList = eventList.filter((event) => {
+			return event.name.toLowerCase().includes(String(filter).toLowerCase()) || nameSwitch(event.eventCategoryId).toLowerCase().includes(String(filter).toLowerCase());
 		});
 		filterEventList(newEventList);
 	};

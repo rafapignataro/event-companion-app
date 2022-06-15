@@ -11,7 +11,7 @@ interface LocationProviderProps {
 interface LocationContextProps {
 	locationList: Location[];
 	filteredLocationList: Location[];
-	filterLocations: (filter: string, filterByCategory?: boolean) => void;
+	filterLocations: (filter: string) => void;
   selectedLocation: Location | null;
   loading: boolean;
   selectLocation: (location: Location | null) => void
@@ -44,10 +44,8 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 		filterLocationList(tempLocations);
 	};
 
-	const filterLocations = (filter: string, filterByCategory?: boolean) => {
-		const newLocationList = filterByCategory ? locationList.filter((location) => {
-			return location.locationCategory.code === filter;
-		}) : locationList.filter((location) => {
+	const filterLocations = (filter: string) => {
+		const newLocationList = locationList.filter((location) => {
 			return location.name.toLowerCase().includes(filter.toLowerCase()) || location.locationCategory.name.toLowerCase().includes(filter.toLowerCase());
 		});
 		filterLocationList(newLocationList);

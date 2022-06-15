@@ -1,12 +1,12 @@
 import { Menu } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import Text from 'antd/lib/typography/Text';
-import { LocationAvatar } from '../../../common/LeafletContainer/components';
 import Search from 'antd/lib/input/Search';
 import { Event } from '../../../../services/events/types';
+import { colorSwitch, nameSwitch } from '../../../../utils/functions/switches';
 
 interface EventsMenuProps {
-	filterEvents: (filter: string | number, filterByCategory?: boolean) => void,
+	filterEvents: (filter: string) => void,
 	filteredEventList: Event[]
 }
 
@@ -14,7 +14,7 @@ const EventsMenu = ({ filterEvents, filteredEventList }: EventsMenuProps) => {
 	return (
 		<>
 			<Search 
-				placeholder="Locais ou categorias"
+				placeholder="Eventos ou categorias"
 				onChange={(e) => filterEvents(e.target.value)}
 				style={{ width: '100%' }}
 			/>
@@ -32,12 +32,21 @@ const EventsMenu = ({ filterEvents, filteredEventList }: EventsMenuProps) => {
 							style={{ height: '6em' }}
 						>
 							<div style={{ display: 'flex', alignItems: 'center', paddingLeft: '2px' }}>
-								<div style={{ fontSize: '1.5em' }}>
-									<div>{event.eventCategoryId}</div>
+								<div style={{ 
+									fontSize: '1.75em', 
+									width: '1.75em', 
+									height: '1.75em', 
+									overflow: 'hidden', 
+									padding: '0.25em', 
+									borderRadius: '0.5em', 
+									display: 'flex',
+									backgroundColor: colorSwitch(event.eventCategoryId) }}
+								>
+									<img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
 								</div>
 								<div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', marginLeft: '1em', lineHeight: '1.5em' }}>
 									<Title level={4} style={{ margin: 0 }}>{event.name}</Title>
-									<Text>{event.eventCategoryId}</Text>
+									<Text>{nameSwitch(event.eventCategoryId)}</Text>
 								</div>
 							</div>
 						</Menu.Item>

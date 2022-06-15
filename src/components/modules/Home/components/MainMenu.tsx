@@ -6,7 +6,7 @@ import { Event } from '../../../../services/events/types';
 interface MainMenuProps {
 	menu: string,
 	setMenu: Dispatch<SetStateAction<string>>,
-	filterEvents: (filter: string | number, filterByCategory?: boolean) => void,
+	filterEvents: (filter: string) => void,
 	filteredEventList: Event[]
 }
 
