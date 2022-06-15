@@ -1,8 +1,6 @@
-
-import { Button } from 'antd';
 import { Dispatch, SetStateAction } from 'react';
 import { Event } from '../../../../services/events/types';
-import { Carousel as AntdCarousel } from 'antd';
+import { EmblaCarousel } from './Embla/EmblaCarousel';
 
 interface CarouselProps {
 	eventList: Event[]
@@ -11,7 +9,6 @@ interface CarouselProps {
 }
 
 export const Carousel = ({ eventList, changePage, selectEvent }: CarouselProps) => {
-
 	return (
 		<div style={{ position: 'absolute', width: '100%', height: '100%', background: '#AAEFFF', overflow: 'hidden' }}>
 			<div
@@ -41,23 +38,11 @@ export const Carousel = ({ eventList, changePage, selectEvent }: CarouselProps) 
 					zIndex: '3',
 					position: 'absolute',
 					width: '100%',
-					height: '100%',
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center'
+					top: '10vh',
+					bottom: '10vh',
 				}}
 			>
-				{eventList.map((event) => {
-					return (
-						<div key={event.id}>
-							<Button onClick={() => {
-								selectEvent(event.id);
-								changePage('event');
-							}}
-							>{event.name}</Button>
-						</div>
-					);
-				})}
+				<EmblaCarousel eventList={eventList} changePage={changePage} selectEvent={selectEvent}  />
 			</div>
 		</div>
 	);

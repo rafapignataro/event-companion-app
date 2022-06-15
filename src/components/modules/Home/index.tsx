@@ -26,7 +26,7 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 
 	return (
 		<Page title="Home">
-			<MainHomeMenu menu={menu} setMenu={setMenu} filterEvents={filterEvents} filteredEventList={filteredEventList} />
+			<MainHomeMenu menu={menu} setMenu={setMenu} filterEvents={filterEvents} filteredEventList={filteredEventList} selectEvent={selectEvent} changePage={changePage} />
 			<Carousel eventList={eventList} changePage={changePage} selectEvent={selectEvent} />
 			<div id="ui-header" style={{
 				position: 'absolute',

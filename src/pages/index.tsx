@@ -11,6 +11,7 @@ const MainPage: NextPage = () => {
 	const [page, setPage] = useState('home');
 	const [eventId, setEventId] = useState<number | null>(null);
 	const [eventList, setEventList] = useState<Event[]>([]);
+	const [eventListLoading, setEventListLoading] = useState(true);
 
 	useEffect(() => {
 		(async () => {
@@ -19,15 +20,23 @@ const MainPage: NextPage = () => {
 				setEventList(newEventList);
 			} catch (e) {
 				console.log('Erro', e);
+			} finally {
+				setEventListLoading(false);
 			}
 		})();
 	}, []);
 
-	if(page === 'home') return <Home changePage={setPage} selectEvent={setEventId} eventList={eventList} />;
-
-	if(page === 'event' && eventId) return <EventPage eventId={eventId} changePage={setPage} selectEvent={setEventId} />;
-
-	return <LoadingScreen/>;
+	return (
+		<>
+			{eventListLoading ? (
+				<LoadingScreen/>
+			) : page === 'home' ? (
+				<Home changePage={setPage} selectEvent={setEventId} eventList={eventList} />
+			) : page === 'event' && eventId ? (
+				<EventPage eventId={eventId} changePage={setPage} selectEvent={setEventId} />
+			) : null}
+		</>
+	);
 };
 
 export default MainPage;
