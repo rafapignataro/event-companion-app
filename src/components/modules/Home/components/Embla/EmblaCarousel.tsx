@@ -3,7 +3,9 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaCarouselType } from 'embla-carousel';
 import { Event } from '../../../../../services/events/types';
 import { colorSwitch } from '../../../../../utils/functions/switches';
-
+import Title from 'antd/lib/typography/Title';
+import Text from 'antd/lib/typography/Text';
+import moment from 'moment';
 interface CarouselProps {
 	eventList: Event[]
 	changePage: Dispatch<SetStateAction<string>>
@@ -104,7 +106,16 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 					{eventList.map((event) => {
 						return (
 							<div key={event.name} className="embla__slide">
-								<img style={{ height: '100%', padding: '4em' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
+								<img style={{ maxHeight: '75%', padding: '2em 0' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
+								<div style={{ width: '100%', textAlign: 'left', marginTop: '1em' }}>
+									<Title style={{ fontFamily: 'Gilroy-ExtraBold', color: '#ffffff', textTransform: 'uppercase', margin: 0 }} level={1}>{event.name}</Title>
+									<Text style={{ color: '#ffffff', textTransform: 'uppercase'}}>
+										{`
+											${moment(event.startDate).format('MMMM Do')} to 
+											${moment(event.endDate).format('MMMM Do')}
+										`}
+									</Text>
+								</div>
 							</div>
 						);
 					})}

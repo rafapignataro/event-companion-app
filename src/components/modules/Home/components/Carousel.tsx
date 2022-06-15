@@ -38,8 +38,8 @@ export const Carousel = ({ eventList, changePage, selectEvent }: CarouselProps) 
 					zIndex: '3',
 					position: 'absolute',
 					width: '100%',
-					top: '20vh',
-					bottom: '20vh',
+					top: '10vh',
+					bottom: '10vh',
 				}}
 			>
 				<EmblaCarousel eventList={eventList} changePage={changePage} selectEvent={selectEvent}  />
