@@ -1,16 +1,15 @@
 import { api } from '../../utils/api';
 import { Marker } from './types';
 
-type FindAllMarkersRequest = {
-  eventId: number
-	// visitorId: number
+type FindEventMarkersRequest = {
+	eventId: number
+	visitorId?: number
 }
 
-export const findAllMarkers = async ({ eventId }: FindAllMarkersRequest) => {
+export const findEventMarkers = async ({ eventId }: FindEventMarkersRequest) => {
 	const response = await api.get<Marker[]>('/markers', {
 		params: {
 			eventId,
-			// visitorId
 		}
 	});
 

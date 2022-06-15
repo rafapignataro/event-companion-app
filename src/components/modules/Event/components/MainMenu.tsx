@@ -11,7 +11,7 @@ interface MainMenuProps {
 }
 
 export const MainEventMenu = ({ menu, setMenu }: MainMenuProps) => {
-	const { selectedLocation, selectLocation, filterLocations } = useLocation();
+	const { selectedLocation, selectLocation, filterLocations, positioningMarker } = useLocation();
 
 	useEffect(() => {
 		if (selectedLocation) {
@@ -26,7 +26,7 @@ export const MainEventMenu = ({ menu, setMenu }: MainMenuProps) => {
 	return (
 		<Modal
 			centered
-			visible={menu !== ''}
+			visible={!positioningMarker && menu !== ''}
 			onCancel={() => {
 				setMenu('');
 				selectLocation(null);
@@ -37,15 +37,9 @@ export const MainEventMenu = ({ menu, setMenu }: MainMenuProps) => {
 			bodyStyle={{ overflow: 'auto', minHeight: '60vh', maxHeight: '70vh', borderRadius: '2em' }}
 			className="main-modal"
 		>
-			{menu === 'nav' ? (
-				<Explore />
-			) : menu === 'social' ? (
-				<Social />
-			) : menu === 'marker' ? (
-				<Markers />
-			) : (
-				<>zap 3</>
-			)}
+			{menu === 'nav' && <Explore />}
+			{menu === 'social' && <Social />}
+			{(menu === 'marker' && !positioningMarker) && <Markers />}
 		</Modal>
 	);
 };

@@ -28,7 +28,6 @@ export default function FriendshipsProvider({ children }: FriendshipsProviderPro
 		try {
 			setRefreshinsFriendships(true);
 
-			console.log(customerId)
 			const friendships = await findAllFriendships({ customerId });
 
 			setFriendships(friendships.filter(friendship => friendship.status === 'ACCEPTED'));

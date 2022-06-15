@@ -12,6 +12,7 @@ import { BeaconIcon, Icon, UserIcon } from './components';
 import { TbFocus2 } from 'react-icons/tb';
 import { Visitor } from '../../../services/visitors/types';
 import { Customer } from '../../../services/customers/types';
+import { Marker as MarkerType } from '../../../services/markers/types';
 
 type AnimatedPanning = {
 	animateRef: MutableRefObject<boolean>;
@@ -25,7 +26,7 @@ type UserLocationProperties = {
 			lat: number;
 			lng: number;
 			alt?: number;
-		}, 
+		},
 		boundEnd: {
 			lat: number;
 			lng: number;
@@ -34,9 +35,9 @@ type UserLocationProperties = {
 	};
 }
 
-type BeaconMarkerProperties = {
+type BeaconMarkerProps = {
 	latLong: [number, number];
-	customer: Customer;
+	marker: MarkerType;
 }
 
 type LocationMarkerProperties = {
@@ -76,6 +77,7 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 	const [locationWarning, setLocationWarning] = useState(false);
 	const [zoomLevel, setZoomLevel] = useState(18);
 	const [maxZoom, setMaxZoom] = useState(19);
+	const { positioningMarker, selectMarkerPosition } = useLocation();
 
 	const map = useMapEvents({
 		load: () => {
@@ -111,6 +113,12 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 			// mapInstance.flyTo(e.latlng, mapInstance.getZoom());
 		});
 
+		map.on('click', function (leaftletEvent) {
+			if (!positioningMarker) return;
+
+			selectMarkerPosition(leaftletEvent.latlng.lat, leaftletEvent.latlng.lng);
+		});
+
 		return () => {
 			mapInstance.stopLocate();
 		};
@@ -118,14 +126,14 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 
 	useEffect(() => {
 		if (!position) return;
-		
-		if(
+
+		if (
 			position.lat < bounds.boundStart.lat ||
 			position.lat > bounds.boundEnd.lat ||
 			position.lng < bounds.boundStart.lng ||
 			position.lng > bounds.boundEnd.lng
 		) {
-			if(!locationWarning) {
+			if (!locationWarning) {
 				notification.warning({
 					message: 'Get over here!',
 					description: 'You are too far from the venue!'
@@ -139,7 +147,7 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 
 	return (position === null || !onPremises) ? null : (
 		<>
-			<div 
+			<div
 				style={{
 					position: 'absolute',
 					zIndex: 999,
@@ -162,7 +170,7 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 					}}
 				/>
 			</div>
-			<Marker 
+			<Marker
 				position={position}
 				icon={icon}
 			/>
@@ -216,7 +224,7 @@ const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMa
 	);
 };
 
-const BeaconMarker = ({ latLong, customer }: BeaconMarkerProperties) => {
+const BeaconMarker = ({ latLong, marker }: BeaconMarkerProps) => {
 	const leafletInstance = L;
 	const [zoomLevel, setZoomLevel] = useState(18);
 	const [maxZoom, setMaxZoom] = useState(19);
@@ -233,7 +241,7 @@ const BeaconMarker = ({ latLong, customer }: BeaconMarkerProperties) => {
 
 	const iconAnchor = document.createElement('div');
 
-	ReactDOM.hydrate(<BeaconIcon key={customer.id} zoomLevel={zoomLevel} maxZoom={maxZoom} color={customer.avatarColor || '#DCDCDC'} />, iconAnchor);
+	ReactDOM.hydrate(<BeaconIcon key={marker.id} zoomLevel={zoomLevel} maxZoom={maxZoom} color={marker.visitor.customer.avatarColor} />, iconAnchor);
 
 	const icon = leafletInstance.divIcon({
 		html: iconAnchor,
@@ -252,7 +260,7 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 	const [hasMounted, setHasMounted] = useState(false);
 	const mapBounds = latLngBounds(convertCoordinates(mapCornerStart), mapCornerEnd);
 	const animateRef = useRef(true);
-	const { locationList, selectedLocation, selectLocation, selectedMarker, yourMarker, friendMarkers, loading } = useLocation();
+	const { locationList, selectedLocation, selectLocation, selectedMarker, customerMarker, friendMarkers, loading } = useLocation();
 
 	useEffect(() => {
 		setHasMounted(true);
@@ -300,14 +308,12 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 										selected={selectedLocation?.id === location.id}
 									/>
 								))}
-								{yourMarker && (
-									<BeaconMarker latLong={[yourMarker.latitude, yourMarker.longitude]} customer={yourMarker.visitor} />
+								{customerMarker &&
+									<BeaconMarker latLong={[customerMarker.latitude, customerMarker.longitude]} marker={customerMarker} />
+								}
+								{friendMarkers.map(
+									friendMarker => <BeaconMarker key={friendMarker.id} latLong={[friendMarker.latitude, friendMarker.longitude]} marker={friendMarker} />
 								)}
-								{friendMarkers.map((friendMarker) => {
-									return(
-										<BeaconMarker key={friendMarker.id} latLong={[friendMarker.latitude, friendMarker.longitude]} customer={friendMarker.visitor} />
-									);
-								})}
 							</>
 						) : <LoadingScreen />}
 						{/* <ZoomControl position='bottomleft' /> */}

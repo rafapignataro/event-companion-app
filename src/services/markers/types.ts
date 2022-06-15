@@ -1,8 +1,8 @@
 export interface Marker {
-	id: number
-	latitude: number
-	longitude: number
-	eventId: number
+	id: number;
+	latitude: number;
+	longitude: number;
+	eventId: number;
 	visitor: {
 		id: number
 		customer: {

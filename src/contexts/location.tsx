@@ -3,70 +3,88 @@ import { Location } from '../services/locations/types';
 import { findAllLocations } from '../services/locations/findAllLocations';
 import moment from 'moment';
 import { Marker } from '../services/markers/types';
-import { findAllMarkers } from '../services/markers/findAllMarkers';
 import { useUser } from './user';
-
-interface MarkerParams {
-	latitude: number
-	longitude: number
-	eventId: number
-	visitorId: number
-}
+import { findCustomerMarker } from '../services/markers/findCustomerMarker';
+import { findEventMarkers } from '../services/markers/findEventMarkers';
+import { useFriendships } from './friendships';
+import { deleteMarker } from '../services/markers/deleteMarker';
+import { createMarker } from '../services/markers/createMarker';
 
 interface LocationProviderProps {
 	eventId: number,
-  children: React.ReactNode;
+	children: React.ReactNode;
 }
 
 interface LocationContextProps {
+	// Event Id
+	eventId: number
+	// Locations
 	locationList: Location[];
 	filteredLocationList: Location[];
 	filterLocations: (filter: string) => void;
-  selectedLocation: Location | null;
-	selectedMarker: Marker | null;
-	yourMarker: Marker | null;
-	friendMarkers: Marker[]
-  loading: boolean;
-  selectLocation: (location: Location | null) => void
-	selectMarker: (marker: Marker | null) => void
-	positionMarker: (marker: MarkerParams | null) => void
+	selectedLocation: Location | null;
+	selectLocation: (location: Location | null) => void
 	refreshLocations: () => Promise<void>
-	eventId: number
+	loading: boolean;
+	// Markers
+	customerMarker: Marker | null;
+	friendMarkers: Marker[]
+	selectedMarker: Marker | null;
+	selectMarker: (marker: Marker | null) => void
+	createCustomerMarker: () => Promise<void>;
+	removeMarker: () => void;
+	positioningMarker: boolean;
+	togglePositioningMarker: () => void;
+	selectedMarkerPosition: { latitude: number; longitude: number } | null;
+	selectMarkerPosition: (latitude: number, longitude: number) => void;
 }
 
 const LocationContext = createContext({} as LocationContextProps);
 
 export default function LocationProvider({ eventId, children }: LocationProviderProps) {
 	const [locationList, setLocationList] = useState<Location[]>([]);
-	const [friendMarkers, setFriendMarkers] = useState<Marker[]>([]);
 	const [filteredLocationList, filterLocationList] = useState<Location[]>([]);
 	const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 	const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null);
-	const [yourMarker, setYourMarker] = useState<Marker | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
+	const [customerMarker, setCustomerMarker] = useState<Marker | null>(null);
+	const [friendMarkers, setFriendMarkers] = useState<Marker[]>([]);
+	const [positioningMarker, setPositioningMarker] = useState(false);
+	const [selectedMarkerPosition, setSelectedMarkerPosition] = useState<{ latitude: number; longitude: number } | null>(null);
+
 	const { user } = useUser();
-	// const { friendList } = useContext();
+	const { friendships } = useFriendships();
 
 	const refreshMarkers = async () => {
-		// const tempMarkers = await findAllMarkers({ eventId });
+		try {
+			const userEventInfo = user.events.find(ev => ev.eventId === eventId);
 
-		// const tempFriendMarkers = tempMarkers.filter((marker) => {
-		// 	// Retornar markers de amigos cujo id (visitor ou user) estejam na sua lista de amigos
-		// 	return friendList.find((friend) => friend.id === marker.visitor.user.id);
-		// });
+			if (!userEventInfo) return;
+			console.log('userEventInfo', userEventInfo)
 
-		// const tempYourMarker = tempMarkers.find((marker) => {
-		// 	// Retornar marker cujo id (visitor ou user) sejam iguais ao da userProvider
-		// 	return marker.visitor.user.id === user.id;	
-		// });
+			const customerMarker = await findCustomerMarker({ eventId, visitorId: userEventInfo.visitorId });
+			console.log('customerMarker', customerMarker)
+			setCustomerMarker(customerMarker);
 
-		// setYourMarker(tempYourMarker || null);
-		// setFriendMarkers(tempFriendMarkers);
+			const eventMarkers = await findEventMarkers({ eventId });
+			console.log('eventMarkers', eventMarkers)
+			console.log('friendships', friendships)
+			setFriendMarkers(
+				eventMarkers.filter(marker =>
+					marker.visitor.id !== userEventInfo.visitorId &&
+					marker.eventId === eventId &&
+					friendships.find(friendship => friendship.customer.id === marker.visitor.customer.id || friendship.friend.id === marker.visitor.customer.id)
+				)
+			);
+		} catch (err) {
+
+		} finally {
+
+		}
 	};
 
 	const refreshLocations = async () => {
-
 		const tempLocations = await findAllLocations({ eventId })
 			.then((tempLocationList) => tempLocationList.map((location) => {
 				return {
@@ -100,33 +118,65 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 		setSelectedMarker(receivedMarker);
 	};
 
-	const positionMarker = async (receivedMarker: MarkerParams | null) => {
-		if (!receivedMarker) {
-			// Await Deletar Marker
-			return setYourMarker(null);
-		}
+	const createCustomerMarker = async () => {
+		try {
+			const userEventInfo = user.events.find(ev => ev.eventId === eventId);
 
-		// Await Post Marker
-		const newMarker = {
-			id: 0,
-			latitude: receivedMarker.latitude,
-			longitude: receivedMarker.longitude,
-			eventId: receivedMarker.eventId,
-			visitor: {
-				id: receivedMarker.visitorId,
-				avatarColor: '',
-				user: {
-					id: 0,
-					name: '',
-					email: '',
-				}
-			}
-		};
-		setYourMarker(newMarker);
+			if (!userEventInfo) return;
+
+			if (!selectedMarkerPosition) return;
+
+			const { latitude, longitude } = selectedMarkerPosition;
+
+			const marker = await createMarker({
+				eventId,
+				visitorId: userEventInfo.visitorId,
+				latitude,
+				longitude,
+			});
+
+			setCustomerMarker(marker);
+			setPositioningMarker(false);
+			setSelectedMarkerPosition(null);
+		} catch (err) {
+
+		} finally {
+
+		}
 	};
 
+	const removeMarker = async () => {
+		try {
+			if (!customerMarker) return;
+
+			await deleteMarker({ id: customerMarker.id });
+			setCustomerMarker(null);
+		} catch (err) {
+
+		} finally {
+
+		}
+	}
+
+	const togglePositioningMarker = () => {
+		if (positioningMarker) {
+			setSelectedMarkerPosition(null);
+			setPositioningMarker(false);
+		} else {
+			setPositioningMarker(true);
+		}
+	}
+
+	const selectMarkerPosition = (latitude: number, longitude: number) => {
+		setSelectedMarkerPosition({
+			latitude,
+			longitude
+		})
+	}
+
 	useEffect(() => {
-		const heartBeat = setInterval(() => {
+		const heartBeat = setInterval(async () => {
+			// Locations Heart Beat area
 			setLocationList(current => current.map((location) => {
 				return {
 					...location,
@@ -139,20 +189,13 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 					})
 				};
 			}));
-		// Armazenar em localstorage a localização para enviar no final do evento
-		}, 1000 * 60); // 60s
+			// Armazenar em localstorage a localização para enviar no final do evento
+
+			// Markers Heart Beat area
+			await refreshMarkers();
+		}, 1000 * 10); // 60s
 		return () => clearInterval(heartBeat);
 	}, []);
-
-	useEffect(() => {
-		(async () => {
-			try {
-				await refreshMarkers();
-			} catch (e) {
-				console.log('Error', e);
-			}
-		})();
-	}, [yourMarker, friendMarkers]);
 
 	useEffect(() => {
 		(async () => {
@@ -168,21 +211,26 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 	}, []);
 
 	return (
-		<LocationContext.Provider 
-			value={{ 
+		<LocationContext.Provider
+			value={{
+				eventId,
 				locationList,
-				refreshLocations,
-				filterLocations,
 				filteredLocationList,
-				selectedLocation, 
+				filterLocations,
+				selectedLocation,
 				selectLocation,
+				refreshLocations,
+				loading,
+				customerMarker,
+				friendMarkers,
 				selectedMarker,
 				selectMarker,
-				friendMarkers,
-				yourMarker,
-				positionMarker,
-				eventId,
-				loading,
+				createCustomerMarker,
+				removeMarker,
+				positioningMarker,
+				togglePositioningMarker,
+				selectedMarkerPosition,
+				selectMarkerPosition
 			}}>
 			{children}
 		</LocationContext.Provider>
