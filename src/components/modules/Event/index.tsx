@@ -15,11 +15,16 @@ interface EventProps {
 	selectEvent: Dispatch<SetStateAction<number | null>>;
 }
 
+interface EventContentProps {
+	changePage: Dispatch<SetStateAction<string>>;
+	selectEvent: Dispatch<SetStateAction<number | null>>;
+}
+
 const MapWithNoSSR = dynamic(() => import('../../common/LeafletContainer'), {
 	ssr: false
 });
 
-const EventContent = () => {
+const EventContent = ({ changePage, selectEvent }: EventContentProps) => {
 	const [menu, setMenu] = useState<string>('');
 	const { positioningMarker, togglePositioningMarker, selectedMarkerPosition, createCustomerMarker } = useLocation();
 
@@ -118,7 +123,7 @@ const EventContent = () => {
 						</Typography.Title>
 					</Col>
 					<Col span={4}>
-						<Button type="default" shape="round" icon={<ToolOutlined />} size={'large'} />
+						<Button type="default" shape="round" icon={<ToolOutlined />} size={'large'} onClick={() => setMenu('settings')} />
 					</Col>
 				</Row>
 			</div>
@@ -218,7 +223,7 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 	return (
 		<Page title="Event">
 			<LocationProvider eventId={eventId}>
-				<EventContent />
+				<EventContent changePage={changePage} selectEvent={selectEvent} />
 			</LocationProvider>
 		</Page >
 	);

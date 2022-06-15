@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useLocation } from '../../../../contexts/location';
+import { Settings } from '../../../common/Settings';
 import { Social } from '../../../common/Social';
 import Explore from '../../Menu/Explore';
 import { Markers } from '../../Menu/Markers';
@@ -40,6 +41,7 @@ export const MainEventMenu = ({ menu, setMenu }: MainMenuProps) => {
 			{menu === 'nav' && <Explore />}
 			{menu === 'social' && <Social />}
 			{(menu === 'marker' && !positioningMarker) && <Markers />}
+			{menu === 'settings' && <Settings />}
 		</Modal>
 	);
 };
