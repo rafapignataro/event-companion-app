@@ -1,13 +1,13 @@
 import { api } from '../../utils/api';
 import { Customer, User } from './types';
 
-type SearchFormCustomerType = Customer & User
+export type SearchForCustomerType = Customer & { user: User };
 
 type SearchForCustomersRequest = {
 	text: string;
 }
 
-export type SearchForCustomersResponse = SearchFormCustomerType[]
+export type SearchForCustomersResponse = SearchForCustomerType[]
 
 export const searchForCustomers = async ({ text }: SearchForCustomersRequest) => {
 	const response = await api.get<SearchForCustomersResponse>('/customers/search', {

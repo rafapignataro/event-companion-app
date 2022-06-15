@@ -1,8 +1,8 @@
 import { Modal } from 'antd';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useLocation } from '../../../../contexts/location';
+import { Social } from '../../../common/Social';
 import Explore from '../../Menu/Explore';
-import { Social } from './Social';
 
 interface MainMenuProps {
 	menu: string,

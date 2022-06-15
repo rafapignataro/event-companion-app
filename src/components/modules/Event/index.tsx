@@ -1,7 +1,6 @@
 import { Col, Row, Button, Typography, Radio } from 'antd';
 import dynamic from 'next/dynamic';
 import { CompassOutlined, ShoppingOutlined, SmileOutlined, ArrowLeftOutlined, ToolOutlined, ShoppingFilled, CompassFilled, SmileFilled } from '@ant-design/icons';
-import { TbFocus2 } from 'react-icons/tb';
 
 import LocationProvider from '../../../contexts/location';
 import { Page } from '../../common/Page';
