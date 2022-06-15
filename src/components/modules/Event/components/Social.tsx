@@ -40,7 +40,7 @@ export const Social = () => {
 			<Col span={24}>
 				<Row align="middle" justify="space-between">
 					<Col span={6} style={{ marginRight: '0.1rem' }}>
-						<Avatar size={80} style={{ backgroundColor: '#35e67f' }} icon={<MdFace />} />
+						<Avatar size={80} style={{ backgroundColor: user.avatarColor }} icon={<MdFace />} />
 					</Col>
 					<Col span={17}>
 						<Row>
