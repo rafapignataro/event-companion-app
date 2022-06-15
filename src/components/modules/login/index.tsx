@@ -48,6 +48,7 @@ export const Login = () => {
 				display: 'flex',
 				justifyContent: 'center',
 				alignItems: 'center',
+				padding: '1rem'
 			}}>
 				<Row>
 					<Col span={24} style={{ marginBottom: '2rem' }}>
