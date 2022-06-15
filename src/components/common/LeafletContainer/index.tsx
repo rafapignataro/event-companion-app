@@ -133,7 +133,7 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 			<div 
 				style={{
 					position: 'absolute',
-					zIndex: 2000,
+					zIndex: 999,
 					display: 'flex',
 					justifyContent: 'center',
 					bottom: '10.5rem',

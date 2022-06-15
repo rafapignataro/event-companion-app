@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useLocation } from '../../../../contexts/location';
 import { Social } from '../../../common/Social';
 import Explore from '../../Menu/Explore';
+import { Markers } from '../../Menu/Markers';
 
 interface MainMenuProps {
 	menu: string,
@@ -40,7 +41,11 @@ export const MainEventMenu = ({ menu, setMenu }: MainMenuProps) => {
 				<Explore />
 			) : menu === 'social' ? (
 				<Social />
-			) : <>zap 3</>}
+			) : menu === 'marker' ? (
+				<Markers />
+			) : (
+				<>zap 3</>
+			)}
 		</Modal>
 	);
 };

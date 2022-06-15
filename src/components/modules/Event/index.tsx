@@ -1,6 +1,6 @@
 import { Col, Row, Button, Typography, Radio } from 'antd';
 import dynamic from 'next/dynamic';
-import { CompassOutlined, ShoppingOutlined, SmileOutlined, ArrowLeftOutlined, ToolOutlined, ShoppingFilled, CompassFilled, SmileFilled } from '@ant-design/icons';
+import { CompassOutlined, ShoppingOutlined, SmileOutlined, ArrowLeftOutlined, ToolOutlined, ShoppingFilled, CompassFilled, SmileFilled, FlagFilled } from '@ant-design/icons';
 
 import LocationProvider from '../../../contexts/location';
 import { Page } from '../../common/Page';
@@ -45,10 +45,33 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 					}
 				>
 				</MapWithNoSSR>
+				<div 
+					style={{
+						position: 'absolute',
+						zIndex: 999,
+						display: 'flex',
+						justifyContent: 'center',
+						bottom: '14rem',
+						right: '0',
+						transform: 'translateX(-50%)'
+					}}
+				>
+					<Button
+						onClick={() => setMenu('marker')}
+						icon={<FlagFilled />}
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							width: '2.5em',
+							height: '2.5em',
+						}}
+					/>
+				</div>
 				<MainEventMenu menu={menu} setMenu={setMenu} />
 				<div id="ui-header" style={{
 					position: 'absolute',
-					zIndex: 1009,
+					zIndex: 998,
 					width: '90%',
 					top: '1.5rem',
 					left: '50%',
@@ -81,7 +104,7 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 					id="ui-footer"
 					style={{
 						position: 'absolute',
-						zIndex: 1009,
+						zIndex: 998,
 						width: '90%',
 						display: 'flex',
 						justifyContent: 'center',
