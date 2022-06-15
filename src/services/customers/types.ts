@@ -10,3 +10,9 @@ export type Customer = {
 	password: string;
 	avatarColor?: Color
 }
+
+export type User = {
+	id: number;
+	name: string;
+	email: string;
+}

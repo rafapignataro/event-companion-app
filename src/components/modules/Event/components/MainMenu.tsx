@@ -33,7 +33,7 @@ export const MainEventMenu = ({ menu, setMenu }: MainMenuProps) => {
 			}}
 			footer={null}
 			closable={false}
-			bodyStyle={{ overflow: 'auto', maxHeight: '70vh', borderRadius: '2em' }}
+			bodyStyle={{ overflow: 'auto', minHeight: '60vh', maxHeight: '70vh', borderRadius: '2em' }}
 			className="main-modal"
 		>
 			{menu === 'nav' ? (
