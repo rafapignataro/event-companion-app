@@ -30,7 +30,7 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 			<Carousel eventList={eventList} changePage={changePage} selectEvent={selectEvent} />
 			<div id="ui-header" style={{
 				position: 'absolute',
-				zIndex: 1009,
+				zIndex: 998,
 				width: '90%',
 				top: '1.5rem',
 				left: '50%',
@@ -53,7 +53,7 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 				id="ui-footer"
 				style={{
 					position: 'absolute',
-					zIndex: 1009,
+					zIndex: 998,
 					width: '90%',
 					display: 'flex',
 					justifyContent: 'center',
