@@ -15,7 +15,7 @@ type User = {
 	email: string;
 	role: string;
 	customerId: number;
-	avatarColor: number;
+	avatarColor: string;
 }
 
 type UserContextProps = {

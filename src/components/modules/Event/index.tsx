@@ -49,7 +49,7 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 				<MainEventMenu menu={menu} setMenu={setMenu} />
 				<div id="ui-header" style={{
 					position: 'absolute',
-					zIndex: 2000,
+					zIndex: 1009,
 					width: '90%',
 					top: '1.5rem',
 					left: '50%',
@@ -82,7 +82,7 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 					id="ui-footer"
 					style={{
 						position: 'absolute',
-						zIndex: 2000,
+						zIndex: 1009,
 						width: '90%',
 						display: 'flex',
 						justifyContent: 'center',
