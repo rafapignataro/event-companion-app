@@ -1,17 +1,24 @@
 import { unauthApi } from '../../utils/api';
 
 type AuthenticateRequest = {
-  email: string;
-  password: string;
+	email: string;
+	password: string;
 }
 
-type AuthenticateResponse = {
-  token: string;
-  user: {
-    id: number;
-    email: string;
-    name: string;
-  }
+export type AuthenticateResponse = {
+	token: string;
+	user: {
+		id: number;
+		name: string;
+		email: string;
+		role: string;
+		customerId: number;
+		avatarColor: string;
+		events: {
+			visitorId: number;
+			eventId: number;
+		}[]
+	}
 }
 
 export const authenticate = async ({ email, password }: AuthenticateRequest) => {

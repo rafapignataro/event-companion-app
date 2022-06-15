@@ -1,22 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import { decode } from 'jsonwebtoken';
+import Router from 'next/router';
+
 import { isAuthenticated } from '../services/authentication/isAuthenticated';
 import { LoadingScreen } from '../components/common/LoadingScreen';
-import Router from 'next/router';
+import { AuthenticateResponse } from '../services/authentication/authenticate';
 
 type UserProviderProps = {
 	children: React.ReactNode;
 }
 
-type User = {
-	id: number;
-	name: string;
-	email: string;
-	role: string;
-	customerId: number;
-	avatarColor: string;
-}
+type User = AuthenticateResponse['user'];
 
 type UserContextProps = {
 	user: User;
@@ -48,7 +43,8 @@ export default function UserProvider({ children }: UserProviderProps) {
 						email: user.email,
 						role: user.role,
 						customerId: user.customerId,
-						avatarColor: user.avatarColor
+						avatarColor: user.avatarColor,
+						events: user.events
 					});
 				}
 			} catch (err) {
