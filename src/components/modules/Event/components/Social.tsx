@@ -225,7 +225,7 @@ export const Social = () => {
 								<Card size="small" key={customer.id}>
 									<Row>
 										<Col span={6}>
-											<Avatar shape="square" size={64} icon={<MdFace />} />
+											<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: customer.avatarColor }} />
 										</Col>
 										<Col span={18}>
 											<Row>
