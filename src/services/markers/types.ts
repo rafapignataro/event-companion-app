@@ -5,11 +5,14 @@ export interface Marker {
 	eventId: number
 	visitor: {
 		id: number
-		avatarColor: string
-		user: {
+		customer: {
 			id: number
-			name: string
-			email: string
+			avatarColor: string
+			user: {
+				id: number
+				name: string
+				email: string
+			}
 		}
 	}
 }

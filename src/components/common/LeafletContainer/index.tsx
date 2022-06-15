@@ -8,13 +8,16 @@ import { useLocation } from '../../../contexts/location';
 import { Location } from '../../../services/locations/types';
 import { LoadingScreen } from '../LoadingScreen';
 import 'leaflet/dist/leaflet.css';
-import { Icon, UserIcon } from './components';
+import { BeaconIcon, Icon, UserIcon } from './components';
 import { TbFocus2 } from 'react-icons/tb';
+import { Visitor } from '../../../services/visitors/types';
+import { Customer } from '../../../services/customers/types';
 
 type AnimatedPanning = {
 	animateRef: MutableRefObject<boolean>;
 	setLocation: () => void;
 }
+
 type UserLocationProperties = {
 	showUserLocation?: boolean;
 	bounds: {
@@ -30,6 +33,12 @@ type UserLocationProperties = {
 		}
 	};
 }
+
+type BeaconMarkerProperties = {
+	latLong: [number, number];
+	customer: Customer;
+}
+
 type LocationMarkerProperties = {
 	latLong: [number, number];
 	location: Location;
@@ -207,11 +216,43 @@ const LocationMarker = ({ latLong, location, setLocation, selected }: LocationMa
 	);
 };
 
+const BeaconMarker = ({ latLong, customer }: BeaconMarkerProperties) => {
+	const leafletInstance = L;
+	const [zoomLevel, setZoomLevel] = useState(18);
+	const [maxZoom, setMaxZoom] = useState(19);
+
+	const map = useMapEvents({
+		load: () => {
+			setZoomLevel(map.getZoom());
+			setMaxZoom(map.getMaxZoom());
+		},
+		zoom: () => {
+			setZoomLevel(map.getZoom());
+		},
+	});
+
+	const iconAnchor = document.createElement('div');
+
+	ReactDOM.hydrate(<BeaconIcon key={customer.id} zoomLevel={zoomLevel} maxZoom={maxZoom} color={customer.avatarColor || '#DCDCDC'} />, iconAnchor);
+
+	const icon = leafletInstance.divIcon({
+		html: iconAnchor,
+		className: 'leaflet-marker-card'
+	});
+
+	return (
+		<Marker
+			icon={icon}
+			position={latLong}
+		/>
+	);
+};
+
 const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapTitle }: MapProperties) => {
 	const [hasMounted, setHasMounted] = useState(false);
 	const mapBounds = latLngBounds(convertCoordinates(mapCornerStart), mapCornerEnd);
 	const animateRef = useRef(true);
-	const { locationList, selectedLocation, selectLocation, loading } = useLocation();
+	const { locationList, selectedLocation, selectLocation, selectedMarker, yourMarker, loading } = useLocation();
 
 	useEffect(() => {
 		setHasMounted(true);
@@ -249,15 +290,20 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 						}} />
 						{/* <CenterOnUser animateRef={animateRef} /> */}
 						{!loading ? (
-							locationList.map(location => (
-								<LocationMarker
-									key={location.id}
-									latLong={[location.latitude, location.longitude]}
-									location={location}
-									setLocation={() => selectLocation(location)}
-									selected={selectedLocation?.id === location.id}
-								/>
-							))
+							<>
+								{locationList.map(location => (
+									<LocationMarker
+										key={location.id}
+										latLong={[location.latitude, location.longitude]}
+										location={location}
+										setLocation={() => selectLocation(location)}
+										selected={selectedLocation?.id === location.id}
+									/>
+								))}
+								{yourMarker && (
+									<BeaconMarker latLong={[yourMarker.latitude, yourMarker.longitude]} customer={yourMarker.visitor} />
+								)}
+							</>
 						) : <LoadingScreen />}
 						{/* <ZoomControl position='bottomleft' /> */}
 					</MapContainer>

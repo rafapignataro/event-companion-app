@@ -21,6 +21,12 @@ interface UserMarkerIconProperties {
 	maxZoom: number;
 }
 
+interface BeaconMarkerIconProperties {
+	zoomLevel: number;
+	maxZoom: number;
+	color: string;
+}
+
 interface LocationAvatarProperties {
 	category: string
 	zoomLevel: number
@@ -148,6 +154,31 @@ export const UserIcon = ({ zoomLevel, maxZoom }: UserMarkerIconProperties) => {
 				</div>
 			</div>
 			<div className='leaflet-user-circles' style={{ fontSize: `${0.7 - ((maxZoom - zoomLevel) * 0.2)}em` }}/>
+		</>
+	);
+};
+export const BeaconIcon = ({ zoomLevel, maxZoom, color }: BeaconMarkerIconProperties) => {
+
+	const hex2rgba = (hex: string, alpha = 1) => {
+		const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+		return `rgba(${r},${g},${b},${alpha})`;
+	};
+	
+	return (
+		<>
+			<div className='leaflet-beacon-user-picture-wrapper' style={{ fontSize: `${0.6 - ((maxZoom - zoomLevel) * 0.2)}em` }}>
+				<div className='leaflet-user-picture'>
+					<MdFace />
+				</div>
+			</div>
+			<div className='leaflet-beacon-user-circles' 
+				style={{ 
+					fontSize: `${0.7 - ((maxZoom - zoomLevel) * 0.2)}em`,
+					backgroundColor: `${hex2rgba(color)}`,
+					border: `1.5em solid ${hex2rgba(color, 0.6)}`,
+					outline: `1.5em solid ${hex2rgba(color, 0.3)}`,
+				}}
+			/>
 		</>
 	);
 };

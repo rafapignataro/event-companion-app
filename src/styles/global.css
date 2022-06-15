@@ -68,6 +68,32 @@ body,
 	box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.25);
 }
 
+.leaflet-beacon-user-picture-wrapper {
+	z-index: 3;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1em solid #ffffff;
+	border-radius: 50% 4px 50% 50%;
+	transition: all ease 1s;
+	width: 10em;
+	height: 10em;
+	position: absolute;
+	transform: translateX(-50%);
+	background-color: #ffffff;
+	-webkit-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.25);
+	box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.25);
+}
+
+.leaflet-beacon-user-circles {
+	z-index: 2;
+	transform: translate(-50%, 50%);
+	margin-top: 1em;
+	position: absolute;
+	padding: 1.5em 2.5em;
+	border-radius: 50%;
+}
+
 .leaflet-user-circles {
 	z-index: 2;
 	transform: translate(-50%, 50%);
