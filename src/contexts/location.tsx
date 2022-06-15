@@ -152,7 +152,7 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 				console.log('Error', e);
 			}
 		})();
-	}, [yourMarker]);
+	}, [yourMarker, friendMarkers]);
 
 	useEffect(() => {
 		(async () => {

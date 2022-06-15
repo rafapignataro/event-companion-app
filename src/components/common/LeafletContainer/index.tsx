@@ -252,7 +252,7 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 	const [hasMounted, setHasMounted] = useState(false);
 	const mapBounds = latLngBounds(convertCoordinates(mapCornerStart), mapCornerEnd);
 	const animateRef = useRef(true);
-	const { locationList, selectedLocation, selectLocation, selectedMarker, yourMarker, loading } = useLocation();
+	const { locationList, selectedLocation, selectLocation, selectedMarker, yourMarker, friendMarkers, loading } = useLocation();
 
 	useEffect(() => {
 		setHasMounted(true);
@@ -303,6 +303,11 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 								{yourMarker && (
 									<BeaconMarker latLong={[yourMarker.latitude, yourMarker.longitude]} customer={yourMarker.visitor} />
 								)}
+								{friendMarkers.map((friendMarker) => {
+									return(
+										<BeaconMarker key={friendMarker.id} latLong={[friendMarker.latitude, friendMarker.longitude]} customer={friendMarker.visitor} />
+									);
+								})}
 							</>
 						) : <LoadingScreen />}
 						{/* <ZoomControl position='bottomleft' /> */}
