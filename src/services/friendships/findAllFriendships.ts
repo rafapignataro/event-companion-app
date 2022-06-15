@@ -4,7 +4,7 @@ type FindAllFriendshipsRequest = {
 	customerId: number;
 }
 
-export type FindAllFriendshipsResponse = {
+export type Friendship = {
 	id: number;
 	status: 'NOT_ACCEPTED' | 'ACCEPTED' | 'REFUSED'
 	customer: {
@@ -25,10 +25,10 @@ export type FindAllFriendshipsResponse = {
 			email: string;
 		}
 	}
-}[]
+}
 
 export const findAllFriendships = async ({ customerId }: FindAllFriendshipsRequest) => {
-	const response = await api.get<FindAllFriendshipsResponse>('/friendships', {
+	const response = await api.get<Friendship[]>('/friendships', {
 		params: {
 			customerId
 		}

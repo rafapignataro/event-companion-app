@@ -1,36 +1,15 @@
 import { Avatar, Button, Card, Col, notification, Row, Typography } from "antd";
 import { useState } from "react";
 import { MdFace } from "react-icons/md";
-import { useUser } from "../../../../contexts/user";
+import { Friendship } from "../../../../services/friendships/findAllFriendships";
 import { updateFriendship } from "../../../../services/friendships/updateFriendship";
 
 type FriendshipRequestProps = {
-	friendshipRequest: {
-		id: number;
-		customer: {
-			id: number;
-			avatarColor: string;
-			user: {
-				id: number;
-				name: string;
-				email: string;
-			}
-		}
-		friend: {
-			id: number;
-			avatarColor: string;
-			user: {
-				id: number;
-				name: string;
-				email: string;
-			}
-		}
-	}
+	friendship: Friendship
 	refreshFriendships: () => void;
 }
 
-export const FriendshipRequest = ({ friendshipRequest, refreshFriendships }: FriendshipRequestProps) => {
-	const { user } = useUser();
+export const FriendshipRequest = ({ friendship, refreshFriendships }: FriendshipRequestProps) => {
 	const [updatingFriendship, setUpdatingFriendship] = useState(false);
 
 	const openNotification = (type: string, message: string, err?: string) => {
@@ -43,8 +22,8 @@ export const FriendshipRequest = ({ friendshipRequest, refreshFriendships }: Fri
 		try {
 			setUpdatingFriendship(true);
 			await updateFriendship({
-				customerId: friendshipRequest.customer.id,
-				friendId: friendshipRequest.friend.id,
+				customerId: friendship.customer.id,
+				friendId: friendship.friend.id,
 				status,
 			});
 
@@ -61,12 +40,12 @@ export const FriendshipRequest = ({ friendshipRequest, refreshFriendships }: Fri
 		<Card size="small">
 			<Row>
 				<Col span={6}>
-					<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: friendshipRequest.customer.avatarColor }} />
+					<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: friendship.customer.avatarColor }} />
 				</Col>
 				<Col span={18}>
 					<Row>
 						<Col span={24} style={{ marginBottom: '5px' }}>
-							<Typography.Title level={3} style={{ margin: 0 }}>{friendshipRequest.customer.user.name}</Typography.Title>
+							<Typography.Title level={3} style={{ margin: 0 }}>{friendship.customer.user.name}</Typography.Title>
 						</Col>
 						<Col span={24}>
 							<Button type="link" onClick={() => onUpdateFriendship('REFUSED')} loading={updatingFriendship}>Refuse</Button>

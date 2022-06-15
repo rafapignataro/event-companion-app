@@ -2,9 +2,10 @@ import { CloseOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Col, Form, Input, Modal, Popover, Row, Space, Tabs, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { MdFace } from 'react-icons/md';
+import { useFriendships } from '../../../contexts/friendships';
 import { useUser } from '../../../contexts/user';
 import { searchForCustomers, SearchForCustomersResponse } from '../../../services/customers/searchCustomers';
-import { findAllFriendships, FindAllFriendshipsResponse } from '../../../services/friendships/findAllFriendships';
+import { Friendship } from './Friendship';
 import { FriendshipRequest } from './FriendshipRequest';
 import { SearchedCustomer } from './SearchedCustomer';
 
@@ -14,20 +15,10 @@ type FormFields = {
 
 export const Social = () => {
 	const { user } = useUser();
+	const { friendships, notAcceptedFriendships, refreshingFriendships, refreshFriendships } = useFriendships();
 	const [screenState, setScreenState] = useState<'FRIENDS_LIST' | 'ADD_FRIEND'>('FRIENDS_LIST');
 	const [searching, setSearching] = useState(false);
-	const [refreshing, setRefreshing] = useState(false);
 	const [searchedCustomers, setSearchedCustomers] = useState<SearchForCustomersResponse>([]);
-	const [friends, setFriends] = useState<FindAllFriendshipsResponse>([]);
-	const [friendshipRequests, setFriendshipRequests] = useState<FindAllFriendshipsResponse>([]);
-
-	useEffect(() => {
-		(async () => {
-			const friendships = await findAllFriendships({ customerId: user.customerId });
-			setFriends(friendships.filter(friendship => friendship.status === 'ACCEPTED'))
-			setFriendshipRequests(friendships.filter(friendship => friendship.status === 'NOT_ACCEPTED' && friendship.customer.id !== user.customerId))
-		})();
-	}, [])
 
 	const onFinishSearch = async ({ text }: FormFields) => {
 		try {
@@ -39,21 +30,6 @@ export const Social = () => {
 			console.log(err)
 		} finally {
 			setSearching(false);
-		}
-	}
-
-	const onRefreshFriendships = async () => {
-		try {
-			setRefreshing(true);
-
-			const friendships = await findAllFriendships({ customerId: user.customerId });
-
-			setFriends(friendships.filter(friendship => friendship.status === 'ACCEPTED'))
-			setFriendshipRequests(friendships.filter(friendship => friendship.status === 'NOT_ACCEPTED' && friendship.customerId !== user.customerId))
-		} catch (err) {
-
-		} finally {
-			setRefreshing(false);
 		}
 	}
 
@@ -80,7 +56,7 @@ export const Social = () => {
 												Events
 											</Typography.Text>
 											&nbsp;
-											{friends.length}
+											{friendships.length}
 											<Typography.Text type="secondary" style={{ margin: 0, fontSize: '1.2rem', marginLeft: '.25rem' }}>
 												Friends
 											</Typography.Text>
@@ -98,40 +74,18 @@ export const Social = () => {
 						<Row align="stretch">
 							<Col span={24}>
 								<Tabs defaultActiveKey="1" onChange={() => { }} centered size="large">
-									<Tabs.TabPane tab={`Friends (${friends.length})`} key="1" style={{ maxHeight: '250px', overflow: 'auto' }}>
+									<Tabs.TabPane tab={`Friends (${friendships.length})`} key="1" style={{ maxHeight: '250px', overflow: 'auto' }}>
 										<Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-											{friends.map(friend => {
-												console.log(friend)
-												let friendUserInfo = friend.friend;
-
-												if (friend.friend.id === user.customerId) {
-													friendUserInfo = friend.customer;
-												}
-
-												return (
-													<Popover content={() => <Button block type="primary">Remove</Button>} title="Remover amigo?">
-														<Card size="small">
-															<Row>
-																<Col span={6}>
-																	<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: friendUserInfo.avatarColor }} />
-																</Col>
-																<Col span={18}>
-																	<Typography.Title level={3} style={{ margin: 0 }}>{friendUserInfo.user.name}</Typography.Title>
-																</Col>
-															</Row>
-														</Card>
-													</Popover>
-												)
-											})}
+											{friendships.map(friendship => <Friendship friendship={friendship} refreshFriendships={refreshFriendships} />)}
 										</Space>
 									</Tabs.TabPane>
-									<Tabs.TabPane tab={`Requests (${friendshipRequests.length})`} key="2">
+									<Tabs.TabPane tab={`Requests (${notAcceptedFriendships.length})`} key="2">
 										<Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-											{friendshipRequests.map(friendshipRequest =>
+											{notAcceptedFriendships.map(friendship =>
 												<FriendshipRequest
-													key={friendshipRequest.id}
-													friendshipRequest={friendshipRequest}
-													refreshFriendships={onRefreshFriendships}
+													key={friendship.id}
+													friendship={friendship}
+													refreshFriendships={refreshFriendships}
 												/>)}
 										</Space>
 									</Tabs.TabPane>
@@ -169,7 +123,7 @@ export const Social = () => {
 					</Col>
 					<Col span={24}>
 						<Space direction="vertical" size="middle" style={{ display: 'flex', maxHeight: '250px', overflow: 'auto', marginBottom: '1rem' }}>
-							{searchedCustomers.map(customer => <SearchedCustomer key={customer.id} customer={customer} refreshFriendships={onRefreshFriendships} />)}
+							{searchedCustomers.map(customer => <SearchedCustomer key={customer.id} customer={customer} refreshFriendships={refreshFriendships} />)}
 						</Space>
 					</Col>
 					<Col span={24}>
