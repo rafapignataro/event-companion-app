@@ -122,7 +122,7 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 		return () => {
 			mapInstance.stopLocate();
 		};
-	}, [onPremises]);
+	}, [onPremises, positioningMarker]);
 
 	useEffect(() => {
 		if (!position) return;

@@ -173,29 +173,6 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 	}
 
 	useEffect(() => {
-		const heartBeat = setInterval(async () => {
-			// Locations Heart Beat area
-			setLocationList(current => current.map((location) => {
-				return {
-					...location,
-					activations: location.activations?.map((activation) => {
-						const now = moment();
-						return {
-							...activation,
-							active: moment(activation.startDate) <= now && moment(activation.endDate) >= now
-						};
-					})
-				};
-			}));
-			// Armazenar em localstorage a localização para enviar no final do evento
-
-			// Markers Heart Beat area
-			await refreshMarkers();
-		}, 1000 * 10); // 60s
-		return () => clearInterval(heartBeat);
-	}, []);
-
-	useEffect(() => {
 		(async () => {
 			try {
 				setLoading(true);
@@ -206,6 +183,12 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 				setLoading(false);
 			}
 		})();
+
+		const heartBeat = setInterval(async () => {
+			await refreshLocations();
+			await refreshMarkers();
+		}, 1000 * 10); // 60s
+		return () => clearInterval(heartBeat);
 	}, []);
 
 	return (
