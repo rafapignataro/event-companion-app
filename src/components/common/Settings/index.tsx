@@ -1,14 +1,17 @@
 import { ToolOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, notification, Row, Tabs } from 'antd';
+import { Button, Col, Form, Input, notification, Radio, Row, Tabs } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import Title from 'antd/lib/typography/Title';
 import { useState } from 'react';
 import { useUser } from '../../../contexts/user';
 import { updatePassword } from '../../../services/authentication/updatePassword';
+import { Color } from '../../../services/customers/types';
+import { updateCustomer } from '../../../services/customers/updateCustomer';
 
 type UpdatePersonalFormFields = {
 	name: string;
 	email: string;
+	avatarColor: Color;
 }
 
 type UpdatePasswordFormFields = {
@@ -18,7 +21,7 @@ type UpdatePasswordFormFields = {
 }
 
 export const Settings = () => {
-	const { user, logoutUser } = useUser();
+	const { user, logoutUser, saveUser } = useUser();
 	const [personalForm] = useForm();
 	const [passwordForm] = useForm();
 
@@ -31,9 +34,20 @@ export const Settings = () => {
 		return;
 	};
 
-	const onFinishUpdatePersonal = async ({ name, email }: UpdatePersonalFormFields) => {
+	const onFinishUpdatePersonal = async ({ name, email, avatarColor }: UpdatePersonalFormFields) => {
 		try {
 			setLoadingUpdatePersonal(true);
+
+			const customer = await updateCustomer({
+				id: user.customerId,
+				data: {
+					name,
+					email,
+					avatarColor
+				}
+			})
+
+			saveUser(customer.token, customer.user);
 
 			openNotification('success', 'Personal info updated!');
 		} catch (err) {
@@ -46,6 +60,14 @@ export const Settings = () => {
 
 	const onFinishUpdatePassword = async ({ oldPassword, newPassword, newPasswordRepeated }: UpdatePasswordFormFields) => {
 		try {
+
+			if (newPassword !== newPasswordRepeated) return passwordForm.setFields([
+				{
+					name: 'newPasswordRepeated',
+					errors: ['The passwords provided must be the same.']
+				}
+			]);
+
 			setLoadingUpdatePassword(true);
 
 			await updatePassword({
@@ -78,7 +100,7 @@ export const Settings = () => {
 					</Col>
 				</Row>
 			</Col>
-			<Col span={24} style={{ height: '400px', marginTop: '1rem' }}>
+			<Col span={24} style={{ height: '400px', marginTop: '1rem', marginBottom: '1rem' }}>
 				<Tabs defaultActiveKey="1" centered size="large">
 					<Tabs.TabPane tab="Personal" key="1">
 						<Form
@@ -106,6 +128,29 @@ export const Settings = () => {
 								rules={[{ required: true, type: 'email', message: 'Please, provide your email!' }]}
 							>
 								<Input placeholder="Email" size="large" disabled={loadingUpdatePersonal} />
+							</Form.Item>
+							<Form.Item
+								name="avatarColor"
+								label="Avatar color"
+								required
+								rules={[{ required: true, message: 'Please, select an avatar color!' }]}
+							>
+								<Radio.Group defaultValue={user.avatarColor} style={{ width: '100%' }}>
+									<Row justify="space-between" align="middle">
+										<Col span={5}>
+											<Radio.Button value="#59FFFF" style={{ backgroundColor: '#59FFFF', width: '100%' }}></Radio.Button>
+										</Col>
+										<Col span={5}>
+											<Radio.Button value="#59FF7D" style={{ backgroundColor: '#59FF7D', width: '100%' }}></Radio.Button>
+										</Col>
+										<Col span={5}>
+											<Radio.Button value="#FF9E59" style={{ backgroundColor: '#FF9E59', width: '100%' }}></Radio.Button>
+										</Col>
+										<Col span={5}>
+											<Radio.Button value="#FF59BC" style={{ backgroundColor: '#FF59BC', width: '100%' }}></Radio.Button>
+										</Col>
+									</Row>
+								</Radio.Group>
 							</Form.Item>
 							<Form.Item>
 								<Button
@@ -141,7 +186,7 @@ export const Settings = () => {
 								name="newPassword"
 								label="New Password"
 								required
-								rules={[{ required: true, message: 'Please, provide your new password!' }]}
+								rules={[{ required: true, message: 'Please, provide your new password!' }, { required: true, min: 6, message: 'The password must have more than 6 characters' }]}
 							>
 								<Input.Password placeholder="Name" size="large" disabled={loadingUpdatePassword} />
 							</Form.Item>
@@ -149,7 +194,7 @@ export const Settings = () => {
 								name="newPasswordRepeated"
 								label="Repeat Password"
 								required
-								rules={[{ required: true, message: 'Please, confirm the new password again!' }]}
+								rules={[{ required: true, message: 'Please, confirm the new password again!' }, { required: true, min: 6, message: 'The password must have more than 6 characters' }]}
 							>
 								<Input.Password placeholder="Name" size="large" disabled={loadingUpdatePassword} />
 							</Form.Item>
