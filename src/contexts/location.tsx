@@ -61,15 +61,13 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 			const userEventInfo = user.events.find(ev => ev.eventId === eventId);
 
 			if (!userEventInfo) return;
-			console.log('userEventInfo', userEventInfo)
 
 			const customerMarker = await findCustomerMarker({ eventId, visitorId: userEventInfo.visitorId });
-			console.log('customerMarker', customerMarker)
+
 			setCustomerMarker(customerMarker);
 
 			const eventMarkers = await findEventMarkers({ eventId });
-			console.log('eventMarkers', eventMarkers)
-			console.log('friendships', friendships)
+
 			setFriendMarkers(
 				eventMarkers.filter(marker =>
 					marker.visitor.id !== userEventInfo.visitorId &&
