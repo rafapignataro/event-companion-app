@@ -288,8 +288,7 @@ const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapT
 							maxNativeZoom={19}
 							minZoom={17}
 							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-
+							url="https://b.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
 						/>
 						<SetViewOnClick animateRef={animateRef} setLocation={() => selectLocation(null)} />
 						<UserLocation showUserLocation={showUserLocation} bounds={{
