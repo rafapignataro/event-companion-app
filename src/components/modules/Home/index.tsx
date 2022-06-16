@@ -45,7 +45,7 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 						</Typography.Title>
 					</Col>
 					<Col span={4}>
-						<Button type="default" shape="round" icon={<ToolOutlined />} size={'large'} />
+						<Button type="default" shape="round" icon={<ToolOutlined />} size={'large'} onClick={() => setMenu('settings')} />
 					</Col>
 				</Row>
 			</div>
