@@ -14,7 +14,7 @@ const config: ConfigOptions = {
 	},
 	staging: {
 		env: 'staging',
-		apiURL: 'http://ec2-15-228-77-86.sa-east-1.compute.amazonaws.com:3000'
+		apiURL: 'http://ec2-15-228-77-86.sa-east-1.compute.amazonaws.com'
 	}
 };
 
