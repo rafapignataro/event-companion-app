@@ -51,7 +51,7 @@ export const Friendship = ({ friendship, refreshFriendships }: FriendshipProps) 
 			<Card size="small">
 				<Row>
 					<Col span={6}>
-						<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: friendUserInfo.avatarColor }} />
+						<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: friendUserInfo.avatarColor, color: '#000' }} />
 					</Col>
 					<Col span={18}>
 						<Typography.Title level={3} style={{ margin: 0 }}>{friendUserInfo.user.name}</Typography.Title>

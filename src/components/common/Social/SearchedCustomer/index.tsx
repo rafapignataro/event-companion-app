@@ -43,7 +43,7 @@ export const SearchedCustomer = ({ customer, refreshFriendships }: SearchedCusto
 		<Card size="small" key={customer.id}>
 			<Row>
 				<Col span={6}>
-					<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: customer.avatarColor }} />
+					<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: customer.avatarColor, color: '#000' }} />
 				</Col>
 				<Col span={18}>
 					<Row>

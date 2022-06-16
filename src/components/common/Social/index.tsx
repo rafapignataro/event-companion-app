@@ -38,7 +38,7 @@ export const Social = () => {
 			<Col span={24}>
 				<Row align="middle" justify="space-between">
 					<Col span={6} style={{ marginRight: '0.1rem' }}>
-						<Avatar size={80} style={{ backgroundColor: user.avatarColor }} icon={<MdFace />} />
+						<Avatar size={80} style={{ backgroundColor: user.avatarColor, color: '#000' }} icon={<MdFace />} />
 					</Col>
 					<Col span={17}>
 						<Row>

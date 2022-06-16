@@ -40,7 +40,7 @@ export const FriendshipRequest = ({ friendship, refreshFriendships }: Friendship
 		<Card size="small">
 			<Row>
 				<Col span={6}>
-					<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: friendship.customer.avatarColor }} />
+					<Avatar shape="square" size={64} icon={<MdFace />} style={{ backgroundColor: friendship.customer.avatarColor, color: '#000' }} />
 				</Col>
 				<Col span={18}>
 					<Row>

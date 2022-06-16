@@ -44,7 +44,7 @@ export const Markers = () => {
 							<Popover content={() => <Button block type="primary" onClick={() => removeMarker()}>Remove</Button>} title="Remove Marker?">
 								<Row align="middle">
 									<Col span={4}>
-										<Avatar shape="circle" size={48} icon={<MdFace />} style={{ backgroundColor: customerMarker.visitor.customer.avatarColor }} />
+										<Avatar shape="circle" size={48} icon={<MdFace />} style={{ backgroundColor: customerMarker.visitor.customer.avatarColor, color: '#000' }} />
 									</Col>
 									<Col style={{ marginLeft: '0.5rem' }}>
 										<Title level={4} style={{ margin: 0 }}>{customerMarker.visitor.customer.user.name}</Title>
@@ -61,7 +61,7 @@ export const Markers = () => {
 						>
 							<Row align="middle">
 								<Col span={4}>
-									<Avatar shape="circle" size={48} icon={<MdFace />} style={{ backgroundColor: friendMarker.visitor.customer.avatarColor }} />
+									<Avatar shape="circle" size={48} icon={<MdFace />} style={{ backgroundColor: friendMarker.visitor.customer.avatarColor, color: '#000' }} />
 								</Col>
 								<Col style={{ marginLeft: '0.5rem' }}>
 									<Title level={4} style={{ margin: 0 }}>{friendMarker.visitor.customer.user.name}</Title>
