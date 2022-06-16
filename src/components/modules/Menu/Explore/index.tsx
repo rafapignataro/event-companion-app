@@ -6,15 +6,45 @@ import { LocationAvatar } from '../../../common/LeafletContainer/components';
 import { BsCircleFill } from 'react-icons/bs';
 import Search from 'antd/lib/input/Search';
 import { Counter } from './components/Counter';
+import { useEffect, useState } from 'react';
+import { useUser } from '../../../../contexts/user';
 
 const Explore = () => {
 	const { selectedLocation, selectLocation, filteredLocationList, filterLocations, locationList } = useLocation();
+	const { user } = useUser();
+	const [distance, setDistance] = useState<number | null>(null);
+
+
+	useEffect(() => {
+		if (!selectedLocation || !user.position) return;
+
+		const rawDistance = measure(
+			user.position.latitude,
+			user.position.longitude,
+			selectedLocation.latitude,
+			selectedLocation.longitude
+		);
+
+		setDistance(Math.floor(rawDistance))
+	}, [selectedLocation])
+
+	const measure = (lat1: number, lon1: number, lat2: number, lon2: number) => {  // generally used geo measurement function
+		var R = 6378.137; // Radius of earth in KM
+		var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+		var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+		var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+			Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+			Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		var d = R * c;
+		return d * 1000; // meters
+	}
 
 	if (selectedLocation) return (
 		<>
 			<div>
 				<Title style={{ fontFamily: 'Gilroy-Extrabold', margin: 0 }}>{selectedLocation.name}</Title>
-				<Title level={4} style={{ fontWeight: 400, margin: '0 0 1em 0' }}>{selectedLocation.locationCategory.name}</Title>
+				<Title level={4} style={{ fontWeight: 400, margin: '0 0 1em 0' }}>{distance}m | {selectedLocation.locationCategory.name}</Title>
 			</div>
 			{locationList.find((location) => location.id === selectedLocation.id)?.activations?.find((activation) => activation.active) && (
 				<div style={{ margin: '1em 0', display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
@@ -30,7 +60,7 @@ const Explore = () => {
 				</div>
 			)}
 			<div style={{ lineHeight: '20px' }}>
-				<Title level={4} style={{ margin: 0 }}>Descrição</Title>
+				<Title level={4} style={{ margin: 0 }}>Description</Title>
 				<Text style={{ fontSize: '20px' }}>{selectedLocation.description}</Text>
 			</div>
 		</>

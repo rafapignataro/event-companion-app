@@ -11,13 +11,24 @@ type UserProviderProps = {
 	children: React.ReactNode;
 }
 
-type User = AuthenticateResponse['user'];
+type UserPosition = {
+	latitude: number;
+	longitude: number;
+}
+
+type User = AuthenticateResponse['user'] & {
+	position?: {
+		latitude: number;
+		longitude: number;
+	}
+};
 
 type UserContextProps = {
 	user: User;
 	loading: boolean;
 	saveUser: (token: string, user: User) => void;
 	logoutUser: () => void;
+	updateUserPosition: (position: UserPosition) => void;
 }
 
 const UserContext = createContext({} as UserContextProps);
@@ -73,10 +84,17 @@ export default function UserProvider({ children }: UserProviderProps) {
 		Router.push('/login');
 	};
 
+	const updateUserPosition = (position: UserPosition) => {
+		setUser({
+			...user,
+			position
+		})
+	}
+
 	if (loading) return <LoadingScreen />;
 
 	return (
-		<UserContext.Provider value={{ user, loading, saveUser, logoutUser }}>
+		<UserContext.Provider value={{ user, loading, saveUser, logoutUser, updateUserPosition }}>
 			{children}
 		</UserContext.Provider>
 	);

@@ -13,6 +13,7 @@ import { TbFocus2 } from 'react-icons/tb';
 import { Visitor } from '../../../services/visitors/types';
 import { Customer } from '../../../services/customers/types';
 import { Marker as MarkerType } from '../../../services/markers/types';
+import { useUser } from '../../../contexts/user';
 
 type AnimatedPanning = {
 	animateRef: MutableRefObject<boolean>;
@@ -78,6 +79,7 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 	const [zoomLevel, setZoomLevel] = useState(18);
 	const [maxZoom, setMaxZoom] = useState(19);
 	const { positioningMarker, selectMarkerPosition } = useLocation();
+	const { updateUserPosition } = useUser();
 
 	const map = useMapEvents({
 		load: () => {
@@ -110,6 +112,11 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 			watch: true,
 		}).on('locationfound', (foundLocation) => {
 			setPosition(foundLocation.latlng);
+
+			updateUserPosition({
+				latitude: foundLocation.latlng.lat,
+				longitude: foundLocation.latlng.lng
+			})
 			// mapInstance.flyTo(e.latlng, mapInstance.getZoom());
 		});
 
