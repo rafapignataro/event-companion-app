@@ -47,23 +47,7 @@ export const Social = () => {
 									{user.name}
 								</Typography.Title>
 							</Col>
-							<Col span={24}>
-								<Row align="middle">
-									<Col span={24}>
-										<Typography.Title level={3} style={{ margin: 0 }}>
-											5
-											<Typography.Text type="secondary" style={{ margin: 0, fontSize: '1.2rem', marginLeft: '.25rem', marginRight: '.5rem' }}>
-												Events
-											</Typography.Text>
-											&nbsp;
-											{friendships.length}
-											<Typography.Text type="secondary" style={{ margin: 0, fontSize: '1.2rem', marginLeft: '.25rem' }}>
-												Friends
-											</Typography.Text>
-										</Typography.Title>
-									</Col>
-								</Row>
-							</Col>
+
 						</Row>
 					</Col>
 				</Row>

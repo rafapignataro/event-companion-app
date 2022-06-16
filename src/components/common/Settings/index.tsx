@@ -115,7 +115,7 @@ export const Settings = () => {
 						>
 							<Form.Item
 								name="name"
-								label="name"
+								label="Name"
 								required
 								rules={[{ required: true, message: 'Please, provide your name!' }]}
 							>
