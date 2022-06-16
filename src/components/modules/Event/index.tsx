@@ -24,7 +24,7 @@ interface EventContentProps {
 
 const MapWithNoSSR = dynamic<MapProperties>(() => import('../../common/LeafletContainer'), {
 	ssr: false
-})
+});
 
 const EventContent = ({ changePage, selectEvent, event }: EventContentProps) => {
 	const [menu, setMenu] = useState<string>('');
