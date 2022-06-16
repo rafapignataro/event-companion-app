@@ -54,27 +54,27 @@ export const LocationCard = ({ children }: { children: React.ReactNode }) => {
 export const LocationAvatar = ({ category, zoomLevel, maxZoom, fixedSize }: LocationAvatarProperties) => {
 	const iconSwitch = (categoryCode: string) => {
 		switch (categoryCode) {
-		case 'FOOD':
-			return <GiHotDog />;
-		case 'ATTRACTION':
-			return <RiRainbowFill />;
-		case 'SHOPPING':
-			return <BiStore />;
-		default:
-			return <GrStatusPlaceholderSmall />;
+			case 'FOOD':
+				return <GiHotDog />;
+			case 'ATTRACTION':
+				return <RiRainbowFill />;
+			case 'SHOPPING':
+				return <BiStore />;
+			default:
+				return <GrStatusPlaceholderSmall />;
 		}
 	};
 
 	const colorSwitch = (categoryCode: string) => {
 		switch (categoryCode) {
-		case 'FOOD':
-			return '#59FF7D';
-		case 'ATTRACTION':
-			return '#FFE459';
-		case 'SHOPPING':
-			return '#FF9E59';
-		default:
-			return '#C7C7C7';
+			case 'FOOD':
+				return '#59FF7D';
+			case 'ATTRACTION':
+				return '#FFE459';
+			case 'SHOPPING':
+				return '#FF9E59';
+			default:
+				return '#C7C7C7';
 		}
 	};
 
@@ -153,17 +153,21 @@ export const UserIcon = ({ zoomLevel, maxZoom }: UserMarkerIconProperties) => {
 					<MdFace />
 				</div>
 			</div>
-			<div className='leaflet-user-circles' style={{ fontSize: `${0.7 - ((maxZoom - zoomLevel) * 0.2)}em` }}/>
+			<div className='leaflet-user-circles' style={{ fontSize: `${0.7 - ((maxZoom - zoomLevel) * 0.2)}em` }} />
 		</>
 	);
 };
 export const BeaconIcon = ({ zoomLevel, maxZoom, color }: BeaconMarkerIconProperties) => {
 
 	const hex2rgba = (hex: string, alpha = 1) => {
-		const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+		const matched = hex.match(/\w\w/g);
+
+		if (!matched) return;
+
+		const [r, g, b] = matched.map(x => parseInt(x, 16));
 		return `rgba(${r},${g},${b},${alpha})`;
 	};
-	
+
 	return (
 		<>
 			<div className='leaflet-beacon-user-picture-wrapper' style={{ fontSize: `${0.6 - ((maxZoom - zoomLevel) * 0.2)}em` }}>
@@ -171,8 +175,8 @@ export const BeaconIcon = ({ zoomLevel, maxZoom, color }: BeaconMarkerIconProper
 					<MdFace />
 				</div>
 			</div>
-			<div className='leaflet-beacon-user-circles' 
-				style={{ 
+			<div className='leaflet-beacon-user-circles'
+				style={{
 					fontSize: `${0.7 - ((maxZoom - zoomLevel) * 0.2)}em`,
 					backgroundColor: `${hex2rgba(color)}`,
 					border: `1.5em solid ${hex2rgba(color, 0.6)}`,

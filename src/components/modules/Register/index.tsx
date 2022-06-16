@@ -40,13 +40,13 @@ export const Register = () => {
 
 			openNotification('success', 'Successfully registered!');
 			Router.push('/login');
-		} catch (err) {
-			console.log(err)
+		} catch (err: any) {
+			console.log(err);
 			openNotification('error', err.message || 'There was an error, try again later!');
 		} finally {
 			setLoading(false);
 		}
-	}
+	};
 
 	return (
 		<Page title="Register">

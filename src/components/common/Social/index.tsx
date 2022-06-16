@@ -26,12 +26,12 @@ export const Social = () => {
 			const customers = await searchForCustomers({ text });
 
 			setSearchedCustomers(customers.filter(c => c.id !== user.customerId));
-		} catch (err) {
-			console.log(err)
+		} catch (err: any) {
+			console.log(err);
 		} finally {
 			setSearching(false);
 		}
-	}
+	};
 
 	return (
 		<Row style={{ height: '100%' }}>
@@ -57,10 +57,10 @@ export const Social = () => {
 					<Col span={24} style={{ marginBottom: '1rem' }}>
 						<Row align="stretch">
 							<Col span={24}>
-								<Tabs defaultActiveKey="1" onChange={() => { }} centered size="large">
+								<Tabs defaultActiveKey="1" centered size="large">
 									<Tabs.TabPane tab={`Friends (${friendships.length})`} key="1" style={{ maxHeight: '250px', overflow: 'auto' }}>
 										<Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-											{friendships.map(friendship => <Friendship friendship={friendship} refreshFriendships={refreshFriendships} />)}
+											{friendships.map(friendship => <Friendship key={friendship.id} friendship={friendship} refreshFriendships={refreshFriendships} />)}
 										</Space>
 									</Tabs.TabPane>
 									<Tabs.TabPane tab={`Requests (${notAcceptedFriendships.length})`} key="2">

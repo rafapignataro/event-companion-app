@@ -1,8 +1,15 @@
-import { Activation } from '../activations/types';
+export type Activation = {
+	id: number;
+	locationId: number;
+	description: string;
+	startDate: Date;
+	endDate: Date;
+	active?: boolean;
+}
 
 export type Location = {
 	id: number;
-  eventId: number;
+	eventId: number;
 	brandId?: number;
 	name: string;
 	description?: string;
@@ -21,9 +28,9 @@ export type LocationCategory = {
 }
 
 export type Visitor = {
-  id: number;
-  customerId: number;
-  eventId: number;
-  updatedAt: Date;
-  createdAt: Date;
+	id: number;
+	customerId: number;
+	eventId: number;
+	updatedAt: Date;
+	createdAt: Date;
 }

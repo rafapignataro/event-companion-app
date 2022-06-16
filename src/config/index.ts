@@ -1,10 +1,10 @@
 type Config = {
-  env: string;
-  apiURL: string;
+	env: string;
+	apiURL: string;
 }
 
 type ConfigOptions = {
-  [key: string]: Config
+	[key: string]: Config
 }
 
 const config: ConfigOptions = {
@@ -14,7 +14,7 @@ const config: ConfigOptions = {
 	},
 	staging: {
 		env: 'staging',
-		apiURL: 'https://event-companion-api.herokuapp.com'
+		apiURL: 'http://ec2-15-228-77-86.sa-east-1.compute.amazonaws.com:3000'
 	}
 };
 

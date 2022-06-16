@@ -3,7 +3,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { Marker } from 'react-leaflet';
-import L, { LatLng, latLngBounds, latLng as convertCoordinates } from 'leaflet';
+import L, { LatLng, latLngBounds, latLng as convertCoordinates, LeafletMouseEventHandlerFn, LeafletMouseEvent } from 'leaflet';
 import { useLocation } from '../../../contexts/location';
 import { Location } from '../../../services/locations/types';
 import { LoadingScreen } from '../LoadingScreen';
@@ -48,11 +48,12 @@ type LocationMarkerProperties = {
 	selected: boolean;
 }
 
-type MapProperties = {
+export type MapProperties = {
 	showUserLocation?: boolean;
 	mapCornerStart: { lat: number, lng: number, alt?: number | undefined };
 	mapCornerEnd: { lat: number, lng: number, alt?: number | undefined };
 	mapTitle?: string;
+	children: React.ReactNode
 }
 
 const SetViewOnClick = ({ animateRef, setLocation }: AnimatedPanning) => {
@@ -116,13 +117,11 @@ const UserLocation = ({ showUserLocation, bounds }: UserLocationProperties) => {
 			updateUserPosition({
 				latitude: foundLocation.latlng.lat,
 				longitude: foundLocation.latlng.lng
-			})
+			});
 			// mapInstance.flyTo(e.latlng, mapInstance.getZoom());
 		});
 
-		map.on('click', function (leaftletEvent) {
-			if (!positioningMarker) return;
-
+		mapInstance.on('click', (leaftletEvent: LeafletMouseEvent) => {
 			selectMarkerPosition(leaftletEvent.latlng.lat, leaftletEvent.latlng.lng);
 		});
 
@@ -263,7 +262,7 @@ const BeaconMarker = ({ latLong, marker }: BeaconMarkerProps) => {
 	);
 };
 
-const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, mapTitle }: MapProperties) => {
+const LeafletContainer = ({ showUserLocation, mapCornerStart, mapCornerEnd, children }: MapProperties) => {
 	const [hasMounted, setHasMounted] = useState(false);
 	const mapBounds = latLngBounds(convertCoordinates(mapCornerStart), mapCornerEnd);
 	const animateRef = useRef(true);

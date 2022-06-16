@@ -17,7 +17,7 @@ export const Counter = ({ endDate }: CounterProps) => {
 		setTimeLeft(`
 			${difference.hours()}:${difference.minutes() < 10 ? `0${difference.minutes()}` : difference.minutes()}:${difference.seconds() < 10 ? `0${difference.seconds()}` : difference.seconds()}
 		`);
-		
+
 		const loop = setInterval(() => {
 			const endTime = moment(endDate);
 			const currTime = moment(new Date());
@@ -32,18 +32,18 @@ export const Counter = ({ endDate }: CounterProps) => {
 	}, []);
 
 	return (
-		<div style={{ 
-			backgroundColor: '#F50359', 
-			display: 'flex', 
-			alignItems: 'center', 
-			borderRadius: '1em 1em 0 0', 
+		<div style={{
+			backgroundColor: '#F50359',
+			display: 'flex',
+			alignItems: 'center',
+			borderRadius: '1em 1em 0 0',
 			padding: '0.1em 1em 0.1em 0.5em',
 		}}>
 			<IoMdStopwatch size={'2em'} color={'#ffffff'} />
-			<Text style={{ 
-				fontSize: '1.3em', 
-				fontWeight: '600', 
-				color: '#ffffff', 
+			<Text style={{
+				fontSize: '1.3em',
+				fontWeight: '600',
+				color: '#ffffff',
 				margin: '0 0 0 0.5em',
 				letterSpacing: '0.15em'
 			}}>

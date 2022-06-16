@@ -1,10 +1,9 @@
-import { Avatar, Button, Card, Col, notification, Row, Typography } from "antd";
-import Form from "antd/lib/form/Form";
-import { useState } from "react";
-import { MdFace } from "react-icons/md";
-import { useUser } from "../../../../contexts/user";
-import { SearchForCustomerType } from "../../../../services/customers/searchCustomers";
-import { createFriendship } from "../../../../services/friendships/createFriendship";
+import { Avatar, Button, Card, Col, notification, Row, Typography } from 'antd';
+import { useState } from 'react';
+import { MdFace } from 'react-icons/md';
+import { useUser } from '../../../../contexts/user';
+import { SearchForCustomerType } from '../../../../services/customers/searchCustomers';
+import { createFriendship } from '../../../../services/friendships/createFriendship';
 
 type SearchedCustomerProps = {
 	customer: SearchForCustomerType;
@@ -32,12 +31,12 @@ export const SearchedCustomer = ({ customer, refreshFriendships }: SearchedCusto
 
 			openNotification('success', 'Friendship requested!');
 			refreshFriendships();
-		} catch (err) {
+		} catch (err: any) {
 			openNotification('error', err.message || 'There was an error in the friendship request, try again later!');
 		} finally {
-			setRequestingFriendship(false)
+			setRequestingFriendship(false);
 		}
-	}
+	};
 
 	return (
 		<Card size="small" key={customer.id}>
@@ -57,5 +56,5 @@ export const SearchedCustomer = ({ customer, refreshFriendships }: SearchedCusto
 				</Col>
 			</Row>
 		</Card>
-	)
-}
+	);
+};

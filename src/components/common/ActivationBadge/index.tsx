@@ -3,13 +3,13 @@ import { Badge } from 'antd';
 import { BsCircleFill } from 'react-icons/bs';
 import { LocationBadge } from './types';
 
-export default function ActivationBadge({ active, near, children }: LocationBadge) {	
+export default function ActivationBadge({ active, near, children }: LocationBadge) {
 	if (!active) return (
 		<>{children}</>
 	);
 
 	return (
-		<Badge count={<BsCircleFill />} style={{ 
+		<Badge count={<BsCircleFill />} style={{
 			color: '#f5222d',
 			borderRadius: '50%',
 			right: '.75em',

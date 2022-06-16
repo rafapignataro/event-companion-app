@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { MainEventMenu } from './components/MainMenu';
 import { createVisitor } from '../../../services/visitors/createVisitor';
 import { useUser } from '../../../contexts/user';
+import { MapProperties } from '../../common/LeafletContainer';
 
 interface EventProps {
 	event: { id: number, name: string };
@@ -21,9 +22,9 @@ interface EventContentProps {
 	selectEvent: Dispatch<SetStateAction<{ id: number, name: string } | null>>;
 }
 
-const MapWithNoSSR = dynamic(() => import('../../common/LeafletContainer'), {
+const MapWithNoSSR = dynamic<MapProperties>(() => import('../../common/LeafletContainer'), {
 	ssr: false
-});
+})
 
 const EventContent = ({ changePage, selectEvent, event }: EventContentProps) => {
 	const [menu, setMenu] = useState<string>('');
@@ -88,7 +89,7 @@ const EventContent = ({ changePage, selectEvent, event }: EventContentProps) => 
 				<Row justify="space-between" align="middle">
 					<Col span={10}>
 						<Button size="large" block onClick={() => {
-							togglePositioningMarker()
+							togglePositioningMarker();
 						}}>CANCEL</Button>
 					</Col>
 					<Col span={10}>
@@ -206,8 +207,8 @@ const EventContent = ({ changePage, selectEvent, event }: EventContentProps) => 
 				</Radio.Group>
 			</div>
 		</>
-	)
-}
+	);
+};
 
 export const Event = ({ event, changePage, selectEvent }: EventProps) => {
 	const { user } = useUser();

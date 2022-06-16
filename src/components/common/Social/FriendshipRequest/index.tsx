@@ -1,8 +1,8 @@
-import { Avatar, Button, Card, Col, notification, Row, Typography } from "antd";
-import { useState } from "react";
-import { MdFace } from "react-icons/md";
-import { Friendship } from "../../../../services/friendships/findAllFriendships";
-import { updateFriendship } from "../../../../services/friendships/updateFriendship";
+import { Avatar, Button, Card, Col, notification, Row, Typography } from 'antd';
+import { useState } from 'react';
+import { MdFace } from 'react-icons/md';
+import { Friendship } from '../../../../services/friendships/findAllFriendships';
+import { updateFriendship } from '../../../../services/friendships/updateFriendship';
 
 type FriendshipRequestProps = {
 	friendship: Friendship
@@ -29,12 +29,12 @@ export const FriendshipRequest = ({ friendship, refreshFriendships }: Friendship
 
 			openNotification('success', `Friendship ${status === 'ACCEPTED' ? 'accepted!' : 'refused!'}`);
 			refreshFriendships();
-		} catch (err) {
+		} catch (err: any) {
 			openNotification('error', err.message || 'There was an error in friendship update, try again later!');
 		} finally {
-			setUpdatingFriendship(false)
+			setUpdatingFriendship(false);
 		}
-	}
+	};
 
 	return (
 		<Card size="small">
@@ -55,5 +55,5 @@ export const FriendshipRequest = ({ friendship, refreshFriendships }: Friendship
 				</Col>
 			</Row>
 		</Card>
-	)
-}
+	);
+};

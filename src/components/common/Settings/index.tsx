@@ -45,17 +45,17 @@ export const Settings = () => {
 					email,
 					avatarColor
 				}
-			})
+			});
 
 			saveUser(customer.token, customer.user);
 
 			openNotification('success', 'Personal info updated!');
-		} catch (err) {
+		} catch (err: any) {
 			openNotification('error', err.message || 'There was an error trying to update personal info, try again later!');
 		} finally {
 			setLoadingUpdatePersonal(false);
 		}
-	}
+	};
 
 
 	const onFinishUpdatePassword = async ({ oldPassword, newPassword, newPasswordRepeated }: UpdatePasswordFormFields) => {
@@ -79,12 +79,12 @@ export const Settings = () => {
 
 			passwordForm.resetFields();
 			openNotification('success', 'Password updated!');
-		} catch (err) {
+		} catch (err: any) {
 			openNotification('error', err.message || 'There was an error trying to update the password, try again later!');
 		} finally {
-			setLoadingUpdatePassword(false)
+			setLoadingUpdatePassword(false);
 		}
-	}
+	};
 
 	return (
 		<Row>

@@ -1,9 +1,9 @@
-import { Avatar, Button, Card, Col, notification, Popover, Row, Typography } from "antd";
-import { useState } from "react";
-import { MdFace } from "react-icons/md";
-import { useUser } from "../../../../contexts/user";
-import { Friendship as FriendshipType } from "../../../../services/friendships/findAllFriendships";
-import { updateFriendship } from "../../../../services/friendships/updateFriendship";
+import { Avatar, Button, Card, Col, notification, Popover, Row, Typography } from 'antd';
+import { useState } from 'react';
+import { MdFace } from 'react-icons/md';
+import { useUser } from '../../../../contexts/user';
+import { Friendship as FriendshipType } from '../../../../services/friendships/findAllFriendships';
+import { updateFriendship } from '../../../../services/friendships/updateFriendship';
 
 type FriendshipProps = {
 	friendship: FriendshipType
@@ -34,12 +34,12 @@ export const Friendship = ({ friendship, refreshFriendships }: FriendshipProps) 
 
 			openNotification('success', 'Friendship removed!');
 			refreshFriendships();
-		} catch (err) {
+		} catch (err: any) {
 			openNotification('error', err.message || 'There was an error removing this friendship, try again later!');
 		} finally {
-			setRemovingFriendship(false)
+			setRemovingFriendship(false);
 		}
-	}
+	};
 
 	let friendUserInfo = friendship.friend;
 	if (friendship.friend.id === user.customerId) {
@@ -59,5 +59,5 @@ export const Friendship = ({ friendship, refreshFriendships }: FriendshipProps) 
 				</Row>
 			</Card>
 		</Popover>
-	)
-}
+	);
+};

@@ -58,7 +58,7 @@ export default function UserProvider({ children }: UserProviderProps) {
 						events: user.events
 					});
 				}
-			} catch (err) {
+			} catch (err: any) {
 				console.log(err);
 			} finally {
 				setLoading(false);

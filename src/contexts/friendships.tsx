@@ -32,7 +32,7 @@ export default function FriendshipsProvider({ children }: FriendshipsProviderPro
 
 			setFriendships(friendships.filter(friendship => friendship.status === 'ACCEPTED'));
 			setNotAcceptedFriendships(friendships.filter(friendship => friendship.status === 'NOT_ACCEPTED' && friendship.customer.id !== user.customerId));
-		} catch (err) {
+		} catch (err: any) {
 
 		} finally {
 			setRefreshinsFriendships(false);

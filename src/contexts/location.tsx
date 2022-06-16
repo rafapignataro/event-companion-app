@@ -75,7 +75,7 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 					friendships.find(friendship => friendship.customer.id === marker.visitor.customer.id || friendship.friend.id === marker.visitor.customer.id)
 				)
 			);
-		} catch (err) {
+		} catch (err: any) {
 
 		} finally {
 
@@ -136,7 +136,7 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 			setCustomerMarker(marker);
 			setPositioningMarker(false);
 			setSelectedMarkerPosition(null);
-		} catch (err) {
+		} catch (err: any) {
 
 		} finally {
 
@@ -149,7 +149,7 @@ export default function LocationProvider({ eventId, children }: LocationProvider
 
 			await deleteMarker({ id: customerMarker.id });
 			setCustomerMarker(null);
-		} catch (err) {
+		} catch (err: any) {
 
 		} finally {
 

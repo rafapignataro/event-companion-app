@@ -1,19 +1,17 @@
-import { Button, Col, Menu, Modal, Popover, Row } from 'antd';
+import { Button, Col, Menu, Popover, Row } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import { MdFace } from 'react-icons/md';
 import { BsPinMapFill } from 'react-icons/bs';
 import { useLocation } from '../../../../contexts/location';
-import { useUser } from '../../../../contexts/user';
 import Avatar from 'antd/lib/avatar/avatar';
 
 
 export const Markers = () => {
-	const { user } = useUser();
-	const { eventId, friendMarkers, selectedMarker, selectMarker, customerMarker, createCustomerMarker, removeMarker, togglePositioningMarker } = useLocation();
+	const { friendMarkers, selectedMarker, selectMarker, customerMarker, createCustomerMarker, removeMarker, togglePositioningMarker } = useLocation();
 
 	const onActivatePositioningMarker = async () => {
 		togglePositioningMarker();
-	}
+	};
 
 	return (
 		<Row>
