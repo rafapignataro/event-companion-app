@@ -10,7 +10,7 @@ import { Counter } from './components/Counter';
 const Explore = () => {
 	const { selectedLocation, selectLocation, filteredLocationList, filterLocations, locationList } = useLocation();
 
-	if(selectedLocation) return (
+	if (selectedLocation) return (
 		<>
 			<div>
 				<Title style={{ fontFamily: 'Gilroy-Extrabold', margin: 0 }}>{selectedLocation.name}</Title>
@@ -38,8 +38,8 @@ const Explore = () => {
 
 	return (
 		<>
-			<Search 
-				placeholder="Locais ou categorias"
+			<Search
+				placeholder="Locations ou categories"
 				onChange={(e) => filterLocations(e.target.value)}
 				style={{ width: '100%' }}
 			/>
@@ -49,8 +49,8 @@ const Explore = () => {
 			>
 				{filteredLocationList.map((location) => {
 					return (
-						<Menu.Item 
-							key={location.id} 
+						<Menu.Item
+							key={location.id}
 							onClick={() => {
 								selectLocation(location);
 							}}
@@ -58,16 +58,16 @@ const Explore = () => {
 						>
 							<div style={{ display: 'flex', alignItems: 'center', paddingLeft: '2px' }}>
 								<div style={{ fontSize: '1.5em' }}>
-									{location.activations?.find((activation) => activation.active) ? 
+									{location.activations?.find((activation) => activation.active) ?
 										(
-											<Badge count={<BsCircleFill />} style={{ 
+											<Badge count={<BsCircleFill />} style={{
 												color: '#f5222d',
 												borderRadius: '50%',
 												right: '.4em',
 												top: '.4em',
 												border: '.2em solid #fff',
 												width: '1.3em',
-												height:'1.3em',
+												height: '1.3em',
 											}}>
 												<LocationAvatar category={location.locationCategory.code} zoomLevel={0} maxZoom={0} fixedSize={true} />
 											</Badge>
@@ -85,7 +85,7 @@ const Explore = () => {
 				})}
 			</Menu>
 		</>
-	);	
+	);
 };
 
 export default Explore;

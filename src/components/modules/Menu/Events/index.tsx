@@ -16,8 +16,8 @@ interface EventsMenuProps {
 const EventsMenu = ({ filterEvents, filteredEventList, selectEvent, changePage }: EventsMenuProps) => {
 	return (
 		<>
-			<Search 
-				placeholder="Eventos ou categorias"
+			<Search
+				placeholder="Events ou categories"
 				onChange={(e) => filterEvents(e.target.value)}
 				style={{ width: '100%' }}
 			/>
@@ -27,8 +27,8 @@ const EventsMenu = ({ filterEvents, filteredEventList, selectEvent, changePage }
 			>
 				{filteredEventList.map((event) => {
 					return (
-						<Menu.Item 
-							key={event.id} 
+						<Menu.Item
+							key={event.id}
 							onClick={() => {
 								selectEvent(event.id);
 								changePage('event');
@@ -36,15 +36,16 @@ const EventsMenu = ({ filterEvents, filteredEventList, selectEvent, changePage }
 							style={{ height: '6em' }}
 						>
 							<div style={{ display: 'flex', alignItems: 'center', paddingLeft: '2px' }}>
-								<div style={{ 
-									fontSize: '1.75em', 
-									width: '1.75em', 
-									height: '1.75em', 
-									overflow: 'hidden', 
-									padding: '0.25em', 
-									borderRadius: '0.5em', 
+								<div style={{
+									fontSize: '1.75em',
+									width: '1.75em',
+									height: '1.75em',
+									overflow: 'hidden',
+									padding: '0.25em',
+									borderRadius: '0.5em',
 									display: 'flex',
-									backgroundColor: colorSwitch(event.eventCategoryId) }}
+									backgroundColor: colorSwitch(event.eventCategoryId)
+								}}
 								>
 									<img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
 								</div>
@@ -58,7 +59,7 @@ const EventsMenu = ({ filterEvents, filteredEventList, selectEvent, changePage }
 				})}
 			</Menu>
 		</>
-	);	
+	);
 };
 
 export default EventsMenu;

@@ -94,7 +94,7 @@ export const Social = () => {
 						</Row>
 					</Col>
 					<Col span={24}>
-						<Button size="large" block type="primary" icon={<PlusOutlined />} onClick={() => setScreenState('ADD_FRIEND')}>Adicionar amigo</Button>
+						<Button size="large" block type="primary" icon={<PlusOutlined />} onClick={() => setScreenState('ADD_FRIEND')}>Add new friend</Button>
 					</Col>
 				</>
 			)}

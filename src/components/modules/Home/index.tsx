@@ -41,7 +41,7 @@ export const Home = ({ changePage, selectEvent, eventList }: HomeProps) => {
 					</Col>
 					<Col span={16}>
 						<Typography.Title level={3} style={{ textAlign: 'center', margin: 0 }}>
-							EVENTOS
+							EVENTS
 						</Typography.Title>
 					</Col>
 					<Col span={4}>
