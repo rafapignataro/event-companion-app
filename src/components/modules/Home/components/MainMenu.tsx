@@ -10,7 +10,7 @@ interface MainMenuProps {
 	setMenu: Dispatch<SetStateAction<string>>,
 	filterEvents: (filter: string) => void,
 	filteredEventList: Event[],
-	selectEvent: Dispatch<SetStateAction<number | null>>
+	selectEvent: Dispatch<SetStateAction<{ id: number, name: string } | null>>
 	changePage: Dispatch<SetStateAction<string>>
 }
 

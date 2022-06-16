@@ -9,7 +9,7 @@ import { MainHomeMenu } from './components/MainMenu';
 
 interface HomeProps {
 	changePage: Dispatch<SetStateAction<string>>
-	selectEvent: Dispatch<SetStateAction<number | null>>
+	selectEvent: Dispatch<SetStateAction<{ id: number, name: string } | null>>
 	eventList: Event[]
 }
 

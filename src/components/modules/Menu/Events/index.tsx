@@ -9,7 +9,7 @@ import { Dispatch, SetStateAction } from 'react';
 interface EventsMenuProps {
 	filterEvents: (filter: string) => void
 	filteredEventList: Event[]
-	selectEvent: Dispatch<SetStateAction<number | null>>
+	selectEvent: Dispatch<SetStateAction<{ id: number, name: string } | null>>
 	changePage: Dispatch<SetStateAction<string>>
 }
 
@@ -30,7 +30,7 @@ const EventsMenu = ({ filterEvents, filteredEventList, selectEvent, changePage }
 						<Menu.Item
 							key={event.id}
 							onClick={() => {
-								selectEvent(event.id);
+								selectEvent({ id: event.id, name: event.name });
 								changePage('event');
 							}}
 							style={{ height: '6em' }}

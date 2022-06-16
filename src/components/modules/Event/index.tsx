@@ -10,21 +10,22 @@ import { createVisitor } from '../../../services/visitors/createVisitor';
 import { useUser } from '../../../contexts/user';
 
 interface EventProps {
-	eventId: number;
+	event: { id: number, name: string };
 	changePage: Dispatch<SetStateAction<string>>;
-	selectEvent: Dispatch<SetStateAction<number | null>>;
+	selectEvent: Dispatch<SetStateAction<{ id: number, name: string } | null>>;
 }
 
 interface EventContentProps {
+	event: { id: number, name: string };
 	changePage: Dispatch<SetStateAction<string>>;
-	selectEvent: Dispatch<SetStateAction<number | null>>;
+	selectEvent: Dispatch<SetStateAction<{ id: number, name: string } | null>>;
 }
 
 const MapWithNoSSR = dynamic(() => import('../../common/LeafletContainer'), {
 	ssr: false
 });
 
-const EventContent = ({ changePage, selectEvent }: EventContentProps) => {
+const EventContent = ({ changePage, selectEvent, event }: EventContentProps) => {
 	const [menu, setMenu] = useState<string>('');
 	const { positioningMarker, togglePositioningMarker, selectedMarkerPosition, createCustomerMarker } = useLocation();
 
@@ -119,7 +120,7 @@ const EventContent = ({ changePage, selectEvent }: EventContentProps) => {
 					</Col>
 					<Col span={16}>
 						<Typography.Title level={3} style={{ textAlign: 'center', margin: 0 }}>
-							LOLLAPALOOZA
+							{event.name.toUpperCase()}
 						</Typography.Title>
 					</Col>
 					<Col span={4}>
@@ -208,13 +209,13 @@ const EventContent = ({ changePage, selectEvent }: EventContentProps) => {
 	)
 }
 
-export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
+export const Event = ({ event, changePage, selectEvent }: EventProps) => {
 	const { user } = useUser();
 
 	useEffect(() => {
 		(async () => {
 			await createVisitor({
-				eventId,
+				eventId: event.id,
 				customerId: user.customerId
 			});
 		})();
@@ -222,8 +223,8 @@ export const Event = ({ eventId, changePage, selectEvent }: EventProps) => {
 
 	return (
 		<Page title="Event">
-			<LocationProvider eventId={eventId}>
-				<EventContent changePage={changePage} selectEvent={selectEvent} />
+			<LocationProvider eventId={event.id}>
+				<EventContent changePage={changePage} selectEvent={selectEvent} event={event} />
 			</LocationProvider>
 		</Page >
 	);

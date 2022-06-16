@@ -9,7 +9,7 @@ import { findAllEvents } from '../services/events/findAllEvents';
 
 const MainPage: NextPage = () => {
 	const [page, setPage] = useState('home');
-	const [eventId, setEventId] = useState<number | null>(null);
+	const [event, setEvent] = useState<{ id: number, name: string } | null>(null);
 	const [eventList, setEventList] = useState<Event[]>([]);
 	const [eventListLoading, setEventListLoading] = useState(true);
 
@@ -29,11 +29,11 @@ const MainPage: NextPage = () => {
 	return (
 		<>
 			{eventListLoading ? (
-				<LoadingScreen/>
+				<LoadingScreen />
 			) : page === 'home' ? (
-				<Home changePage={setPage} selectEvent={setEventId} eventList={eventList} />
-			) : page === 'event' && eventId ? (
-				<EventPage eventId={eventId} changePage={setPage} selectEvent={setEventId} />
+				<Home changePage={setPage} selectEvent={setEvent} eventList={eventList} />
+			) : page === 'event' && event ? (
+				<EventPage event={event} changePage={setPage} selectEvent={setEvent} />
 			) : null}
 		</>
 	);

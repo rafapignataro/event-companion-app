@@ -9,7 +9,7 @@ import moment from 'moment';
 interface CarouselProps {
 	eventList: Event[]
 	changePage: Dispatch<SetStateAction<string>>
-	selectEvent: Dispatch<SetStateAction<number | null>>
+	selectEvent: Dispatch<SetStateAction<{ id: number, name: string } | null>>
 }
 
 export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselProps) => {
@@ -72,9 +72,9 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 	};
 
 	useEffect(() => {
-		if(!emblaApi || !emblaApi2) return;
+		if (!emblaApi || !emblaApi2) return;
 		const { scrollToProgress } = createScrollProgressUtils(emblaApi2);
-		
+
 		emblaApi.on('scroll', () => {
 			const progress = emblaApi.scrollProgress();
 			scrollToProgress(progress, false);
@@ -88,15 +88,15 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 
 	return (
 		<>
-			<div 
-				className="embla" 
-				ref={emblaRef} 
+			<div
+				className="embla"
+				ref={emblaRef}
 				style={{
 					width: '100%',
 					height: '75%'
 				}}
 			>
-				<div 
+				<div
 					className="embla__container"
 					style={{
 						width: '100%',
@@ -109,7 +109,7 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 								<img style={{ maxHeight: '75%', padding: '2em 0' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
 								<div style={{ width: '100%', textAlign: 'left', marginTop: '1em' }}>
 									<Title style={{ fontFamily: 'Gilroy-ExtraBold', color: '#ffffff', textTransform: 'uppercase', margin: 0 }} level={1}>{event.name}</Title>
-									<Text style={{ color: '#ffffff', textTransform: 'uppercase'}}>
+									<Text style={{ color: '#ffffff', textTransform: 'uppercase' }}>
 										{`
 											${moment(event.startDate).format('MMMM Do')} to 
 											${moment(event.endDate).format('MMMM Do')}
@@ -121,16 +121,16 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 					})}
 				</div>
 			</div>
-			
-			<div 
-				className="embla" 
-				ref={emblaRef2} 
+
+			<div
+				className="embla"
+				ref={emblaRef2}
 				style={{
 					width: '100%',
 					height: '25%'
 				}}
 			>
-				<div 
+				<div
 					className="embla__container"
 					style={{
 						width: '100%',
@@ -141,12 +141,12 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 						return (
 							<div key={event.name} className="embla__slide__2">
 								<div style={{ display: 'flex', alignItems: 'center' }}>
-									<div style={{ 
-										fontSize: '2.25em', 
-										width: '2.25em', 
-										height: '2.25em', 
-										overflow: 'hidden', 
-										padding: '0.25em', 
+									<div style={{
+										fontSize: '2.25em',
+										width: '2.25em',
+										height: '2.25em',
+										overflow: 'hidden',
+										padding: '0.25em',
 										borderRadius: '50%',
 										border: '0.2em solid #ffffff',
 										boxSizing: 'border-box',
@@ -155,10 +155,13 @@ export const EmblaCarousel = ({ eventList, changePage, selectEvent }: CarouselPr
 										backgroundColor: colorSwitch(event.eventCategoryId),
 										cursor: 'pointer'
 									}}
-									onClick={() => {
-										selectEvent(event.id);
-										changePage('event');
-									}}
+										onClick={() => {
+											selectEvent({
+												id: event.id,
+												name: event.name
+											});
+											changePage('event');
+										}}
 									>
 										<img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={event.logoURL || 'https://i.imgur.com/myhmEJH.png'} />
 									</div>
